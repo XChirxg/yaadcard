@@ -1,0 +1,778 @@
+/* Custom Variables & Themes */
+:root {
+  --bg-primary: #080c14;
+  --bg-secondary: #0f172a;
+  --bg-glass: rgba(15, 23, 42, 0.7);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  
+  --theme-color: #3b82f6;
+  --theme-color-rgb: 59, 130, 246;
+  
+  --card-width-poker: 2.5in;
+  --card-height-poker: 3.5in;
+  
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'Fira Code', 'Courier New', Courier, monospace;
+
+  /* Theme Presets */
+  --cyan-primary: #06b6d4;
+  --cyan-rgb: 6, 182, 212;
+  --orange-primary: #f97316;
+  --orange-rgb: 249, 115, 22;
+  --purple-primary: #a855f7;
+  --purple-rgb: 168, 85, 247;
+  --emerald-primary: #10b981;
+  --emerald-rgb: 16, 185, 129;
+  --gold-primary: #eab308;
+  --gold-rgb: 234, 179, 8;
+}
+
+/* Light Mode Variables Override */
+body.light-theme {
+  --bg-primary: #f1f5f9;
+  --bg-secondary: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --text-main: #0f172a;
+  --text-muted: #475569;
+}
+
+/* General Resets */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Layout */
+.app-container {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .app-container {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: auto;
+  }
+}
+
+/* Sidebar & Control Panel */
+.sidebar {
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border-glass);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.logo-section h1 {
+  font-size: 1.4rem;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.logo-badge {
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+  font-size: 0.7rem;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.control-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.control-input, select, textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-glass);
+  border-radius: 4px;
+  padding: 8px 12px;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  transition: border-color 0.2s;
+}
+
+.control-input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--theme-color);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Prompt Template Custom Box */
+.prompt-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px dashed var(--border-glass);
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  max-height: 250px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  color: #34d399;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.btn {
+  background: var(--theme-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  filter: brightness(1.15);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.validation-status {
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.validation-status.success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.validation-status.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Guidelines Callout Box */
+.guideline-callout {
+  background: rgba(234, 179, 8, 0.08);
+  border-left: 3px solid #eab308;
+  padding: 10px;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: #fef08a;
+  border-radius: 2px;
+}
+
+.guideline-callout ul {
+  padding-left: 12px;
+  margin-top: 4px;
+}
+
+/* Main Content Area */
+.main-workspace {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.workspace-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-glass);
+  background-color: var(--bg-secondary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.workspace-title h2 {
+  font-size: 1.15rem;
+}
+.workspace-title p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Theme toggler & custom radio pickers */
+.theme-picker {
+  display: flex;
+  gap: 6px;
+}
+
+.theme-chip {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.1s;
+}
+
+.theme-chip.active {
+  border-color: var(--text-main);
+  transform: scale(1.15);
+}
+
+.theme-chip.cyan { background-color: var(--cyan-primary); }
+.theme-chip.orange { background-color: var(--orange-primary); }
+.theme-chip.purple { background-color: var(--purple-primary); }
+.theme-chip.emerald { background-color: var(--emerald-primary); }
+.theme-chip.gold { background-color: var(--gold-primary); }
+
+/* Dashboard Card Grid view */
+.dashboard-view {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  align-content: start;
+}
+
+/* Interactive Flip Card Styles */
+.card-outer {
+  perspective: 1000px;
+  aspect-ratio: 5 / 7; /* Matches Poker size ratio */
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.card-outer.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 0 !important; /* Sharp corners for clean cropping */
+  background-color: var(--bg-secondary);
+  border: 2px solid var(--border-glass);
+  box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.card-outer:hover .card-front,
+.card-outer:hover .card-back {
+  border-color: var(--theme-color);
+  box-shadow: 0 8px 20px -3px rgba(var(--theme-color-rgb), 0.15);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+/* Card Visual Frame & Accents */
+.card-frame {
+  flex: 1;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.2);
+  border-radius: 0 !important; /* Sharp corners */
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at top left, rgba(var(--theme-color-rgb), 0.02), transparent 80%);
+}
+
+/* Corner indices (only on Back cards now) */
+.card-index {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--theme-color);
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card-index.top-left {
+  top: 8px;
+  left: 8px;
+}
+
+.card-index.bottom-right {
+  bottom: 8px;
+  right: 8px;
+  transform: rotate(180deg);
+}
+
+.card-index-symbol {
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+/* Front Page - Super Simple design */
+.card-front-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.card-front-keyword {
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--text-main);
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--theme-color);
+  padding-bottom: 6px;
+  width: 90%;
+  word-wrap: break-word;
+}
+
+/* Back Side Details */
+.card-back-title {
+  font-size: 0.95rem;
+  color: var(--text-main);
+  border-bottom: 2px solid rgba(var(--theme-color-rgb), 0.3);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  margin-top: 10px; /* Make space for index icon */
+}
+
+.card-tagline {
+  font-size: 0.68rem;
+  font-style: italic;
+  color: var(--text-muted);
+  line-height: 1.25;
+  margin-bottom: 6px;
+  height: 2.5em;
+  overflow: hidden;
+}
+
+/* Back content containers & sizes */
+.card-back-content {
+  flex: 1;
+  overflow: hidden; /* Scrollbar prevented by word-limit checks */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.card-summary {
+  color: var(--text-main);
+  font-weight: 450;
+  margin-bottom: 2px;
+}
+
+/* Card Table component */
+.card-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.card-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.65rem;
+}
+
+.card-table th {
+  background-color: rgba(var(--theme-color-rgb), 0.15);
+  color: var(--text-main);
+  font-weight: 600;
+  padding: 3px 5px;
+  border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.2);
+}
+
+.card-table td {
+  padding: 3px 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  white-space: pre-line;
+}
+
+/* Card Lists */
+.card-points {
+  padding-left: 10px;
+  margin: 2px 0;
+}
+
+.card-points li {
+  margin-bottom: 2px;
+  color: var(--text-muted);
+}
+
+/* Monospace Text Diagram component */
+.card-diagram-block {
+  font-family: var(--font-mono);
+  background: #04060d;
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 0;
+  padding: 4px;
+  font-size: 0.58rem;
+  line-height: 1.25;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* Floating Actions in Dashboard */
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+.action-btn.delete:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+/* Editor Modal Window */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-content {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: 0; /* Sharp corners */
+  width: 90%;
+  max-width: 550px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-glass);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Print Area Configuration */
+#print-area {
+  display: none;
+}
+
+/* ==========================================================================
+   PRINT MEDIA QUERY FOR A3 LANDSCAPE PRINTING
+   ========================================================================== */
+@media print {
+  /* Hide standard screen interfaces */
+  body, .app-container, .main-workspace, .workspace-header, .sidebar, .modal-overlay {
+    display: none !important;
+  }
+  
+  /* Reset document for clean printing */
+  html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    font-family: Arial, sans-serif !important;
+  }
+
+  #print-area {
+    display: block !important;
+    background-color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Specific A3 Landscape paper properties matching the margins exactly */
+  @page {
+    size: A3 landscape;
+    margin: 0.59in 0.77in; /* Leaves exact margins for safety and card alignments */
+  }
+
+  /* Print Pages Layout Grid (6 Columns, 3 Rows = 18 Poker Cards per Page) */
+  .print-page {
+    page-break-after: always !important;
+    break-after: page !important;
+    display: grid !important;
+    box-sizing: border-box !important;
+    width: 15.0in !important; /* 6 cols * 2.5in = 15in */
+    height: 10.5in !important; /* 3 rows * 3.5in = 10.5in */
+    grid-template-columns: repeat(6, var(--card-width-poker)) !important;
+    grid-template-rows: repeat(3, var(--card-height-poker)) !important;
+    gap: 0 !important;
+    margin: 0 auto !important;
+    background-color: #ffffff !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Foldable Card Page Setup: 3 Foldable columns (Double width) * 3 Rows = 9 Cards per Page */
+  .print-page.foldable-page-layout {
+    display: grid !important;
+    grid-template-columns: repeat(3, 5.0in) !important; /* Front + Back side-by-side */
+    grid-template-rows: repeat(3, var(--card-height-poker)) !important;
+    width: 15.0in !important;
+    height: 10.5in !important;
+  }
+
+  /* Flat Printable Card styling (no 3D transformations) */
+  .print-card-wrapper {
+    box-sizing: border-box !important;
+    width: var(--card-width-poker) !important;
+    height: var(--card-height-poker) !important;
+    overflow: hidden !important;
+    background-color: #ffffff !important;
+    border: 0.5px solid #aaaaaa !important; /* Cutting lines for easy paper-cutting guide */
+    position: relative !important;
+    border-radius: 0 !important; /* Sharp corners */
+  }
+
+  .print-card {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0.12in !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    overflow: hidden !important;
+    border-radius: 0 !important; /* Sharp corners */
+  }
+
+  /* Internal Card frames for border decorations in print */
+  .print-card .card-frame {
+    border: 2px solid var(--theme-color) !important;
+    border-radius: 0 !important; /* Sharp corners */
+    background: none !important;
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 0.08in !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Front side print adjustments */
+  .print-card .card-front-keyword {
+    color: #000000 !important;
+    border-bottom-color: var(--theme-color) !important;
+  }
+
+  /* Back print content adjustments */
+  .print-card .card-back-title {
+    border-color: var(--theme-color) !important;
+    color: #000000 !important;
+  }
+
+  .print-card .card-tagline {
+    color: #444444 !important;
+  }
+
+  .print-card .card-summary {
+    color: #000000 !important;
+  }
+
+  .print-card .card-points li {
+    color: #222222 !important;
+  }
+
+  /* Tables in print */
+  .print-card .card-table-wrapper {
+    border-color: #bbbbbb !important;
+    background-color: #ffffff !important;
+  }
+
+  .print-card .card-table th {
+    background-color: #e2e8f0 !important;
+    border-color: #aaaaaa !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .print-card .card-table td {
+    border-color: #dddddd !important;
+    color: #222222 !important;
+  }
+
+  /* Diagrams in print */
+  .print-card .card-diagram-block {
+    background-color: #f8fafc !important;
+    color: #0d9488 !important;
+    border-color: #cbd5e1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Foldable Card Grid Layouts (Side by side) */
+  .print-foldable-pair {
+    display: flex !important;
+    width: 5.0in !important;
+    height: 3.5in !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Left and right sides of foldable cards have light grey outer cutting border */
+  .print-foldable-pair .print-card-wrapper {
+    border: 0.5px solid #aaaaaa !important;
+  }
+
+  .print-foldable-divider {
+    width: 0 !important;
+    border-left: 1.5px dashed #bbbbbb !important; /* Dotted line down the middle for folding */
+    height: 100% !important;
+    z-index: 10 !important;
+  }
+}
