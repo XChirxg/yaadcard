@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YaadCard Admin Dashboard - Insights & Pre-orders</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Main shared CSS -->
+  <link rel="stylesheet" href="store.css">
+  
+  <style>
+    /* Admin dashboard adjustments */
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      width: 100%;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-brand h1 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #ff3b30, #ff9500);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    .admin-tag {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ff8a80;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-top: 8px;
+      color: var(--text-main);
+    }
+
+    .metric-accent-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+    }
+
+    /* Tabs / Section toggle */
+    .admin-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .admin-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border-radius: 50px;
+      transition: all 0.2s;
+    }
+
+    .admin-tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .admin-tab-btn.active {
+      color: white;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    /* Panel Content Container */
+    .admin-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      display: none;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .admin-panel.active {
+      display: block;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .panel-header h2 {
+      font-size: 1.3rem;
+      margin: 0;
+      font-family: var(--font-display);
+    }
+
+    .search-filter-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-input {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      color: var(--text-main);
+      font-size: 0.85rem;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    /* Data Tables style */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    th {
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+      letter-spacing: 0.05em;
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      vertical-align: top;
+      color: #cbd5e1;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .status-select {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .status-select option {
+      background: #0f172a;
+    }
+
+    /* Badge indicators */
+    .badge-status {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-pending { background: rgba(245, 158, 11, 0.15); color: #fef08a; }
+    .status-confirmed { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+    .status-delivered { background: rgba(16, 185, 129, 0.15); color: #a7f3d0; }
+    .status-cancelled { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+
+    .custom-details-text {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #f472b6;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 4px 8px;
+      border-radius: 4px;
+      max-width: 250px;
+      white-space: pre-wrap;
+    }
+
+    .address-text {
+      max-width: 200px;
+      white-space: pre-wrap;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Utilities & Actions styling */
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-admin {
+      background: var(--text-main);
+      color: var(--text-dark);
+      border: none;
+      padding: 8px 14px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-admin:hover {
+      background: var(--accent-color);
+      color: white;
+    }
+
+    .btn-admin-secondary {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-admin-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .btn-admin-danger {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+
+    .btn-admin-danger:hover {
+      background: #ef4444;
+      color: white;
+      border-color: #ef4444;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+    }
+
+    .empty-state svg {
+      opacity: 0.25;
+      margin-bottom: 12px;
+    }
+
+    /* Sandbox controls */
+    .admin-controls-box {
+      margin-top: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .admin-controls-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .admin-controls-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    
+    <!-- Admin Header -->
+    <header class="admin-header">
+      <div class="admin-brand">
+        <h1>yaadcard</h1>
+        <span class="admin-tag">Console Insights</span>
+      </div>
+      <a href="index.html" class="btn-primary-store" style="padding: 8px 16px; text-decoration: none; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 8px; border-radius: 6px; width: auto; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border-color);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        <span>Back to Store</span>
+      </a>
+    </header>
+
+    <!-- Metrics Row -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-title">Total Pre-orders</div>
+        <div class="metric-value" id="metric-total-orders">0</div>
+        <div class="metric-accent-line" style="background-color: var(--cyan-primary);"></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Est. Revenue Value</div>
+        <div class="metric-value" id="metric-revenue">₹0</div>
+        <div class="metric-accent-line" style="background-color: var(--success-color);"></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Search Queries Recorded</div>
+        <div class="metric-value" id="metric-searches">0</div>
+        <div class="metric-accent-line" style="background-color: var(--purple-primary);"></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-title">Top Searched Term</div>
+        <div class="metric-value" id="metric-top-search" style="font-size: 1.4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">N/A</div>
+        <div class="metric-accent-line" style="background-color: var(--gold-primary);"></div>
+      </div>
+    </div>
+
+    <!-- Section navigation -->
+    <nav class="admin-nav">
+      <button class="admin-tab-btn active" onclick="switchPanel('preorders-panel', this)">Pre-orders list</button>
+      <button class="admin-tab-btn" onclick="switchPanel('searches-panel', this)">Search insights logs</button>
+    </nav>
+
+    <!-- Panel 1: Pre-orders -->
+    <section class="admin-panel active" id="preorders-panel">
+      <div class="panel-header">
+        <h2>Customer Pre-orders</h2>
+        <div class="button-group">
+          <button class="btn-admin btn-admin-secondary" onclick="exportData('preorders', 'csv')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export CSV</span>
+          </button>
+          <button class="btn-admin btn-admin-secondary" onclick="exportData('preorders', 'json')">Export JSON</button>
+        </div>
+      </div>
+
+      <div class="search-filter-row">
+        <input type="text" id="order-filter" class="filter-input" placeholder="Filter orders by customer name, phone, email, address or products..." oninput="loadPreorders()">
+      </div>
+
+      <div class="table-container">
+        <table id="preorders-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Decks Ordered</th>
+              <th>Estimated Total</th>
+              <th>Shipping Address</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="preorders-list-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="preorders-empty" style="display: none;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="4"/><line x1="8" y1="2" x2="8" y2="4"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+        <p>No customer pre-orders logged yet.</p>
+      </div>
+    </section>
+
+    <!-- Panel 2: Searches -->
+    <section class="admin-panel" id="searches-panel">
+      <div class="panel-header">
+        <h2>Recorded Searches</h2>
+        <div class="button-group">
+          <button class="btn-admin btn-admin-secondary" onclick="exportData('searches', 'csv')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Export CSV</span>
+          </button>
+          <button class="btn-admin btn-admin-secondary" onclick="exportData('searches', 'json')">Export JSON</button>
+        </div>
+      </div>
+
+      <div class="search-filter-row">
+        <input type="text" id="search-filter" class="filter-input" placeholder="Filter search logs..." oninput="loadSearches()">
+      </div>
+
+      <div class="table-container">
+        <table id="searches-table">
+          <thead>
+            <tr>
+              <th>Search Phrase</th>
+              <th>Occurrence Count</th>
+              <th>Results Returned</th>
+              <th>Last Searched Date</th>
+            </tr>
+          </thead>
+          <tbody id="searches-list-body">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="searches-empty" style="display: none;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>No search keywords logged yet.</p>
+      </div>
+    </section>
+
+    <!-- Admin management sandbox -->
+    <div class="admin-controls-box">
+      <div>
+        <div class="admin-controls-title">Sandbox Management Console</div>
+        <div class="admin-controls-desc">Inspect, reset, or populate demonstration mock datasets.</div>
+      </div>
+      <div class="button-group">
+        <button class="btn-admin btn-admin-secondary" onclick="loadSampleData()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><polyline points="3.29 7 12 12 20.71 7"/><line x1="12" y1="22" x2="12" y2="12"/></svg>
+          <span>Load Mock Data</span>
+        </button>
+        <button class="btn-admin btn-admin-danger" onclick="clearAllData()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          <span>Purge All Records</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Panel tabs toggle logic
+    function switchPanel(panelId, btn) {
+      document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+      
+      document.getElementById(panelId).classList.add("active");
+      btn.classList.add("active");
+    }
+
+    // Initialize Page
+    window.addEventListener("DOMContentLoaded", () => {
+      loadDashboard();
+    });
+
+    function loadDashboard() {
+      loadPreorders();
+      loadSearches();
+      calculateMetrics();
+    }
+
+    // Calculate Admin stats metrics
+    function calculateMetrics() {
+      const preorders = JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
+      const searches = JSON.parse(localStorage.getItem("yaadcard_searches") || "[]");
+
+      // Total orders
+      document.getElementById("metric-total-orders").textContent = preorders.length;
+
+      // Total revenue value
+      const revenue = preorders.reduce((sum, order) => sum + (order.totalCost || 0), 0);
+      document.getElementById("metric-revenue").textContent = `₹${revenue}`;
+
+      // Total unique searches
+      document.getElementById("metric-searches").textContent = searches.length;
+
+      // Top searched query
+      if (searches.length > 0) {
+        const sortedSearches = [...searches].sort((a, b) => (b.count || 1) - (a.count || 1));
+        document.getElementById("metric-top-search").textContent = `"${sortedSearches[0].query}" (${sortedSearches[0].count}x)`;
+      } else {
+        document.getElementById("metric-top-search").textContent = "N/A";
+      }
+    }
+
+    // Render pre-orders list table
+    function loadPreorders() {
+      const preorders = JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
+      const filterText = document.getElementById("order-filter").value.toLowerCase();
+      const body = document.getElementById("preorders-list-body");
+      const emptyState = document.getElementById("preorders-empty");
+      const table = document.getElementById("preorders-table");
+      
+      body.innerHTML = "";
+
+      const filtered = preorders.filter(order => {
+        return order.name.toLowerCase().includes(filterText) ||
+               order.phone.toLowerCase().includes(filterText) ||
+               order.email.toLowerCase().includes(filterText) ||
+               order.product.toLowerCase().includes(filterText) ||
+               (order.address && order.address.toLowerCase().includes(filterText));
+      }).sort((a, b) => b.id - a.id); // Newest first
+
+      if (filtered.length === 0) {
+        table.style.display = "none";
+        emptyState.style.display = "block";
+        return;
+      }
+
+      table.style.display = "table";
+      emptyState.style.display = "none";
+
+      filtered.forEach(order => {
+        const dateStr = new Date(order.date).toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+
+        const tr = document.createElement("tr");
+        
+        let statusBadgeClass = "status-pending";
+        if (order.status === "Confirmed") statusBadgeClass = "status-confirmed";
+        if (order.status === "Delivered") statusBadgeClass = "status-delivered";
+        if (order.status === "Cancelled") statusBadgeClass = "status-cancelled";
+
+        tr.innerHTML = `
+          <td><div style="font-size: 0.8rem; color: var(--text-muted);">${dateStr}</div></td>
+          <td>
+            <strong>${order.name}</strong><br>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">${order.email}</span><br>
+            <span style="font-size: 0.75rem; color: #38bdf8;">📞 ${order.phone}</span>
+          </td>
+          <td>
+            <div style="font-weight: 700; color: var(--text-main);">${order.product}</div>
+            ${order.customDetails ? `<div class="custom-details-text" style="margin-top: 6px;">💡 Custom: ${order.customDetails}</div>` : ""}
+          </td>
+          <td><strong style="color: #34d399; font-size: 1rem;">₹${order.totalCost}</strong><br><span style="font-size: 0.7rem; color: var(--text-muted);">${order.quantity} decks</span></td>
+          <td><div class="address-text">${order.address}</div></td>
+          <td>
+            <span class="badge-status ${statusBadgeClass}" id="badge-status-${order.id}">${order.status || 'Pending'}</span>
+          </td>
+          <td>
+            <select class="status-select" onchange="updateOrderStatus(${order.id}, this.value)">
+              <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="Confirmed" ${order.status === 'Confirmed' ? 'selected' : ''}>Confirm</option>
+              <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Deliver</option>
+              <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancel</option>
+            </select>
+          </td>
+        `;
+
+        body.appendChild(tr);
+      });
+    }
+
+    // Render searches list table
+    function loadSearches() {
+      const searches = JSON.parse(localStorage.getItem("yaadcard_searches") || "[]");
+      const filterText = document.getElementById("search-filter").value.toLowerCase();
+      const body = document.getElementById("searches-list-body");
+      const emptyState = document.getElementById("searches-empty");
+      const table = document.getElementById("searches-table");
+
+      body.innerHTML = "";
+
+      const filtered = searches.filter(log => {
+        return log.query.toLowerCase().includes(filterText);
+      }).sort((a, b) => b.count - a.count); // Most searched first
+
+      if (filtered.length === 0) {
+        table.style.display = "none";
+        emptyState.style.display = "block";
+        return;
+      }
+
+      table.style.display = "table";
+      emptyState.style.display = "none";
+
+      filtered.forEach(log => {
+        const tr = document.createElement("tr");
+        
+        const dateStr = log.timestamp ? new Date(log.timestamp).toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit"
+        }) : "N/A";
+
+        tr.innerHTML = `
+          <td><strong style="color: #38bdf8;">"${log.query}"</strong></td>
+          <td><strong>${log.count}</strong> times</td>
+          <td>
+            <span style="color: ${log.resultsCount > 0 ? '#34d399' : '#f87171'}">
+              ${log.resultsCount} deck${log.resultsCount === 1 ? '' : 's'}
+            </span>
+          </td>
+          <td><div style="font-size: 0.8rem; color: var(--text-muted);">${dateStr}</div></td>
+        `;
+
+        body.appendChild(tr);
+      });
+    }
+
+    // Update status in local storage
+    function updateOrderStatus(orderId, newStatus) {
+      const preorders = JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
+      const index = preorders.findIndex(o => o.id === orderId);
+      
+      if (index > -1) {
+        preorders[index].status = newStatus;
+        localStorage.setItem("yaadcard_preorders", JSON.stringify(preorders));
+        
+        // Update badge directly
+        const badge = document.getElementById(`badge-status-${orderId}`);
+        badge.className = `badge-status status-${newStatus.toLowerCase()}`;
+        badge.textContent = newStatus;
+        
+        calculateMetrics();
+      }
+    }
+
+    // Export local storage data
+    function exportData(dataType, format) {
+      const dataKey = dataType === 'preorders' ? 'yaadcard_preorders' : 'yaadcard_searches';
+      const items = JSON.parse(localStorage.getItem(dataKey) || "[]");
+      
+      if (items.length === 0) {
+        alert("There is no data to export.");
+        return;
+      }
+
+      let content = "";
+      let filename = `yaadcard_${dataType}_export_${new Date().toISOString().slice(0, 10)}`;
+      let mimeType = "";
+
+      if (format === 'json') {
+        content = JSON.stringify(items, null, 2);
+        filename += ".json";
+        mimeType = "application/json";
+      } else if (format === 'csv') {
+        mimeType = "text/csv";
+        filename += ".csv";
+        
+        if (dataType === 'preorders') {
+          const headers = ["ID", "Date", "Customer Name", "Email", "Phone", "Products Ordered", "Quantity", "Total Cost", "Shipping Address", "Custom Details", "Status"];
+          content += headers.join(",") + "\n";
+          
+          items.forEach(item => {
+            const row = [
+              item.id,
+              new Date(item.date).toISOString(),
+              `"${item.name.replace(/"/g, '""')}"`,
+              item.email,
+              `'${item.phone}`,
+              `"${item.product.replace(/"/g, '""')}"`,
+              item.quantity,
+              item.totalCost,
+              `"${(item.address || '').replace(/\n/g, ' ').replace(/"/g, '""')}"`,
+              `"${(item.customDetails || '').replace(/\n/g, ' ').replace(/"/g, '""')}"`,
+              item.status
+            ];
+            content += row.join(",") + "\n";
+          });
+        } else {
+          const headers = ["Search Query", "Count", "Results Count", "Last Searched"];
+          content += headers.join(",") + "\n";
+          
+          items.forEach(item => {
+            const row = [
+              `"${item.query.replace(/"/g, '""')}"`,
+              item.count,
+              item.resultsCount || 0,
+              item.timestamp
+            ];
+            content += row.join(",") + "\n";
+          });
+        }
+      }
+
+      // Download trigger
+      const blob = new Blob([content], { type: `${mimeType};charset=utf-8;` });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Load sandbox demo datasets
+    function loadSampleData() {
+      const samplePreorders = [
+        {
+          id: 1724265431000,
+          name: "Sandeep Sharma",
+          email: "sandeep.sharma99@gmail.com",
+          phone: "9876543210",
+          product: "2x Biology, 3x Pharmacology",
+          quantity: 5,
+          customDetails: "",
+          address: "12, Mall Road, Shimla, Himachal Pradesh - 171001",
+          totalCost: 500, // 5 decks = 500 base bundle price
+          date: new Date(Date.now() - 4 * 3600000).toISOString(),
+          status: "Pending"
+        },
+        {
+          id: 1724264210000,
+          name: "Priya Patel",
+          email: "priya.patel@yahoo.com",
+          phone: "8899887766",
+          product: "1x Philosophy",
+          quantity: 1,
+          customDetails: "",
+          address: "House 45-B, Sector 15, Chandigarh - 160015",
+          totalCost: 120, // 1 deck = 120 base sale price
+          date: new Date(Date.now() - 12 * 3600000).toISOString(),
+          status: "Confirmed"
+        },
+        {
+          id: 1724261895000,
+          name: "Rahul Verma",
+          email: "rahul.v@outlook.com",
+          phone: "9001122334",
+          product: "1x Custom YaadCard Deck, 1x Physics Formulas",
+          quantity: 2,
+          customDetails: "I want a deck summarizing formulas for competitive chemistry exams (JEE level), focusing on Organic Chemistry reaction mechanisms.",
+          address: "IIT Campus, Hostel 4 Room 102, Delhi - 110016",
+          totalCost: 240, // 2 decks = 240 base cost
+          date: new Date(Date.now() - 28 * 3600000).toISOString(),
+          status: "Pending"
+        },
+        {
+          id: 1724259421000,
+          name: "Anjali Gupta",
+          email: "anjali.g@gmail.com",
+          phone: "9555123456",
+          product: "1x Himachal Collections",
+          quantity: 1,
+          customDetails: "",
+          address: "VPO Rakkar, Near Dharamshala, Kangra, HP - 176057",
+          totalCost: 120, // 1 deck = 120 base cost
+          date: new Date(Date.now() - 36 * 3600000).toISOString(),
+          status: "Delivered"
+        }
+      ];
+
+      const sampleSearches = [
+        { query: "polity", timestamp: new Date(Date.now() - 3600000).toISOString(), count: 24, resultsCount: 1 },
+        { query: "biology", timestamp: new Date(Date.now() - 10000000).toISOString(), count: 18, resultsCount: 1 },
+        { query: "pharmacology", timestamp: new Date(Date.now() - 12000000).toISOString(), count: 15, resultsCount: 1 },
+        { query: "party games", timestamp: new Date(Date.now() - 25000000).toISOString(), count: 12, resultsCount: 1 },
+        { query: "wanderlust", timestamp: new Date(Date.now() - 30000000).toISOString(), count: 8, resultsCount: 1 },
+        { query: "statistics", timestamp: new Date(Date.now() - 35000000).toISOString(), count: 6, resultsCount: 1 }
+      ];
+
+      localStorage.setItem("yaadcard_preorders", JSON.stringify(samplePreorders));
+      localStorage.setItem("yaadcard_searches", JSON.stringify(sampleSearches));
+      
+      loadDashboard();
+      alert("Mock data loaded successfully into localStorage!");
+    }
+
+    // Purge records from localStorage
+    function clearAllData() {
+      if (confirm("⚠️ CAUTION: This will delete ALL pre-orders and search logs from localStorage. This action cannot be undone.\n\nAre you sure you want to proceed?")) {
+        localStorage.removeItem("yaadcard_preorders");
+        localStorage.removeItem("yaadcard_searches");
+        loadDashboard();
+        alert("All database records cleared from localStorage.");
+      }
+    }
+  </script>
+</body>
+</html>
