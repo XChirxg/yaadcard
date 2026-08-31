@@ -1,7 +1,24 @@
 // store.js - Premium E-Commerce Storefront Engine (boAt/Apple Inspired)
 
-// Product Catalog (MRP=250, Cards=30, reviews/GSM removed)
-const PRODUCTS = [
+// Firebase Initialization
+const firebaseConfig = {
+  apiKey: "AIzaSyC4cR2mvd_HviadFoVrOa5a2Iq_gpd_qs0",
+  authDomain: "yaadcard.firebaseapp.com",
+  projectId: "yaadcard",
+  storageBucket: "yaadcard.firebasestorage.app",
+  messagingSenderId: "554394840786",
+  appId: "1:554394840786:web:2cd42d8d7b6b1b751a870b"
+};
+
+if (typeof firebase !== 'undefined') {
+  firebase.initializeApp(firebaseConfig);
+  window.db = firebase.firestore();
+} else {
+  console.warn("Firebase SDK not loaded. Store is running in offline local-only fallback mode.");
+}
+
+// Default seed catalog list (MRP=250, Cards=30)
+const DEFAULT_PRODUCTS = [
   {
     id: "47_laws_of_powers",
     name: "47 Laws of Powers",
@@ -9,7 +26,7 @@ const PRODUCTS = [
     theme: "gold",
     image: "product-images/47_laws_of_powers.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "BESTSELLER",
     description: "Master the rules of influence, strategy, and power based on historical insights. Curated into actionable prompts."
@@ -21,7 +38,7 @@ const PRODUCTS = [
     theme: "emerald",
     image: "product-images/biology.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "HIGH YIELD",
     description: "High-yield visual flashcards for cellular biology, genetics, human anatomy, and physiological processes."
@@ -33,7 +50,7 @@ const PRODUCTS = [
     theme: "cyan",
     image: "product-images/business_finance.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "ESSENTIAL",
     description: "Core corporate finance formulas, balance sheet terms, ratios, valuation, and capital structure principles."
@@ -45,7 +62,7 @@ const PRODUCTS = [
     theme: "orange",
     image: "product-images/economics.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "CORE",
     description: "Visual summaries of microeconomics, macroeconomics, supply/demand shifts, and fiscal/monetary policies."
@@ -57,7 +74,7 @@ const PRODUCTS = [
     theme: "purple",
     image: "product-images/pharmacology.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "POPULAR",
     description: "Quick revision for drug classifications, mechanisms of action, major side effects, and clinical indications."
@@ -69,7 +86,7 @@ const PRODUCTS = [
     theme: "gold",
     image: "product-images/philosophy.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "DEEP DIVE",
     description: "A summary of Stoicism, Existentialism, Rationalism, and major logical reasoning rules for everyday life."
@@ -81,7 +98,7 @@ const PRODUCTS = [
     theme: "cyan",
     image: "product-images/physics_formulas.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "REVISION",
     description: "Fundamental formulas, constants, SI units, equations of motion, electrodynamics, and quantum mechanics."
@@ -93,7 +110,7 @@ const PRODUCTS = [
     theme: "orange",
     image: "product-images/indian_polity.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "EXAM SPECIFIC",
     description: "Complete guide to the Indian Constitution, articles, amendments, fundamental rights, and governance structures."
@@ -105,7 +122,7 @@ const PRODUCTS = [
     theme: "purple",
     image: "product-images/psychology.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "INSIGHTFUL",
     description: "Explore core psychological experiments, human behavioral concepts, and cognitive biases."
@@ -117,7 +134,7 @@ const PRODUCTS = [
     theme: "emerald",
     image: "product-images/statistics.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "ANALYTICS",
     description: "Probability distributions, central limit theorem, hypothesis tests, Z/T/Chi-Square tables, and regressions."
@@ -129,12 +146,11 @@ const PRODUCTS = [
     theme: "gold",
     image: "product-images/himachal_collections.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "GK SPECIAL",
     description: "Curated general knowledge deck covering the history, geography, economy, and culture of Himachal Pradesh."
   },
-  // Placeholders for future categories (Games and Journey)
   {
     id: "truth_and_dare",
     name: "Truth & Dare Party Pack",
@@ -142,7 +158,7 @@ const PRODUCTS = [
     theme: "purple",
     image: "product-images/truth_and_dare.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "COMING SOON",
     isComingSoon: true,
@@ -155,13 +171,12 @@ const PRODUCTS = [
     theme: "emerald",
     image: "product-images/wanderlust_phrasebook.jpg",
     cardsCount: 30,
-    price: 120,
+    price: 200,
     originalPrice: 250,
     badge: "COMING SOON",
     isComingSoon: true,
     description: "Essential travel phrasecards, packing checklists, emergency translations, and navigation guides."
   },
-  // Custom Card Product
   {
     id: "custom_deck",
     name: "Custom YaadCard Deck",
@@ -169,28 +184,33 @@ const PRODUCTS = [
     theme: "cyan",
     image: "product-images/custom_flashcards.jpg",
     cardsCount: "Custom",
-    price: 120,
+    price: 250, // Updated custom deck pricing (standard + 50)
     originalPrice: 250,
     badge: "CUSTOM DESIGN",
     description: "Submit your own notes, syllabus, or topics! We'll format, design, and print a custom flashcard deck just for you."
   }
 ];
 
+// Global catalog state loaded from Firestore
+let PRODUCTS = [];
+
 // Shopping Cart State
 let CART = [];
 
 // Filter States
-let activeCategory = "all";
 let searchQuery = "";
 let searchLogTimeout = null;
 let lastLoggedSearch = "";
+
+// Pagination State
+let currentPage = 1;
+const itemsPerPage = 10;
 
 // Slideshow Global Index Tracker
 let currentSlideIndex = 0;
 
 // DOM Links
 const storeProductGrid = document.getElementById("store-product-grid");
-const filterTabs = document.querySelector(".filter-tabs");
 const navSearch = document.getElementById("nav-search");
 const cartOverlay = document.getElementById("cart-overlay");
 const cartDrawer = document.getElementById("cart-drawer");
@@ -219,107 +239,230 @@ const storeValueProps = document.getElementById("store-value-props");
 const storeMainCatalog = document.getElementById("store-main-catalog");
 const productDetailView = document.getElementById("product-detail-view");
 
+// Load products from Firestore, seed if empty
+function loadProductsFromFirestore() {
+  if (window.db) {
+    return window.db.collection("products").get().then((snapshot) => {
+      if (snapshot.empty) {
+        console.log("Products catalog is empty in Firestore. Seeding default products...");
+        const batch = window.db.batch();
+        DEFAULT_PRODUCTS.forEach(p => {
+          const docRef = window.db.collection("products").doc(p.id);
+          batch.set(docRef, p);
+        });
+        return batch.commit().then(() => {
+          console.log("Seeding complete.");
+          PRODUCTS = DEFAULT_PRODUCTS;
+          return PRODUCTS;
+        });
+      } else {
+        PRODUCTS = [];
+        snapshot.forEach(doc => {
+          PRODUCTS.push(doc.data());
+        });
+        return PRODUCTS;
+      }
+    }).catch(error => {
+      console.error("Error loading products from Firestore: ", error);
+      PRODUCTS = DEFAULT_PRODUCTS; // Offline fallback
+      return PRODUCTS;
+    });
+  } else {
+    PRODUCTS = DEFAULT_PRODUCTS;
+    return Promise.resolve(PRODUCTS);
+  }
+}
+
 // Initialization
 window.addEventListener("DOMContentLoaded", () => {
-  renderCatalog();
   setupListeners();
   loadCartFromStorage();
   updateCartUI();
+
+  // Load Firestore catalog
+  loadProductsFromFirestore().then(() => {
+    renderFeaturedDecks();
+    renderCatalog();
+    setupSearchDropdowns();
+  });
 });
 
 // Setup click and search events
 function setupListeners() {
-  // Category tabs click
-  filterTabs.addEventListener("click", (e) => {
-    if (e.target.classList.contains("filter-tab")) {
-      document.querySelectorAll(".filter-tab").forEach(tab => tab.classList.remove("active"));
-      e.target.classList.add("active");
-      activeCategory = e.target.getAttribute("data-category");
-      renderCatalog();
-    }
-  });
-
   // Search input typing filter
-  navSearch.addEventListener("input", (e) => {
-    searchQuery = e.target.value.trim().toLowerCase();
-    renderCatalog();
-    debounceSearchLog(searchQuery);
+  if (navSearch) {
+    navSearch.addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      currentPage = 1; // Reset to page 1 on search
+      renderCatalog();
+      debounceSearchLog(searchQuery);
+    });
+
+    navSearch.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        logSearch(searchQuery);
+      }
+    });
+  }
+}
+
+// Helper to create product card DOM
+function createProductCard(product) {
+  const card = document.createElement("div");
+  card.className = "product-card";
+  
+  card.addEventListener("click", (e) => {
+    if (e.target.closest("button") || e.target.closest("a")) return;
+    openProductDetail(product.id);
   });
 
-  // Direct enter search logs
-  navSearch.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      logSearch(searchQuery);
-    }
+  card.innerHTML = `
+    <div class="card-image-box">
+      ${product.badge ? `<span class="card-badge ${product.isComingSoon ? 'soon' : (product.id === 'custom_deck' ? 'custom' : '')}">${product.badge}</span>` : ""}
+      <span class="card-badge-category">${product.category || 'Deck'}</span>
+      <img src="${product.image}" alt="${product.name}" onerror="handleImageError(this, '${product.name}', '${product.theme}')">
+    </div>
+    <div class="card-details">
+      <h3 class="card-product-title">${product.name}</h3>
+      <p class="card-product-desc">${product.description}</p>
+      
+      <div class="card-product-meta">
+        <div class="meta-spec">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <span>${product.cardsCount} cards</span>
+        </div>
+        <div>Case Pack</div>
+      </div>
+
+      <div class="card-product-pricing">
+        <span class="price-regular">₹${product.originalPrice}</span>
+        <span class="price-sale">₹${product.price}</span>
+      </div>
+
+      ${product.isComingSoon ? 
+        `<button class="btn-primary-store" disabled>Coming Soon</button>` : 
+        `<button class="btn-primary-store" onclick="event.stopPropagation(); addItemToCart('${product.id}')">Add to Cart</button>`
+      }
+    </div>
+  `;
+  return card;
+}
+
+// Render the Featured Decks section
+function renderFeaturedDecks() {
+  const featuredGrid = document.getElementById("featured-product-grid");
+  const featuredSection = document.getElementById("featured-decks-section");
+  if (!featuredGrid || !featuredSection) return;
+
+  const featuredProducts = PRODUCTS.filter(p => p.featured === true).slice(0, 4);
+
+  if (featuredProducts.length === 0) {
+    featuredSection.style.display = "none";
+    return;
+  }
+
+  featuredSection.style.display = "block";
+  featuredGrid.innerHTML = "";
+
+  featuredProducts.forEach(product => {
+    featuredGrid.appendChild(createProductCard(product));
   });
 }
 
-// Render the product cards grid
+// Render the product cards grid with pagination
 function renderCatalog() {
+  if (!storeProductGrid) return;
   storeProductGrid.innerHTML = "";
 
   const filtered = PRODUCTS.filter(product => {
-    const matchesCategory = activeCategory === "all" || product.category === activeCategory;
     const matchesSearch = product.name.toLowerCase().includes(searchQuery) ||
-                          product.category.toLowerCase().includes(searchQuery) ||
+                          (product.category && product.category.toLowerCase().includes(searchQuery)) ||
                           product.description.toLowerCase().includes(searchQuery);
-    return matchesCategory && matchesSearch;
+    return matchesSearch;
   });
 
   if (filtered.length === 0) {
     storeProductGrid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 64px 24px; color: var(--text-muted);">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3; margin-bottom: 16px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <p style="font-size: 1.1rem; font-weight: 600;">No decks found matching "${searchQuery}"</p>
-        <p style="font-size: 0.85rem; margin-top: 8px;">Try searching for Academics, Exams, or contact us for a Custom Deck request!</p>
+      <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity: 0.3;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div>
+          <p style="font-size: 1.1rem; font-weight: 600; color: var(--text-main);">No decks found matching "${searchQuery}"</p>
+          <p style="font-size: 0.85rem; margin-top: 4px;">We couldn't find a standard deck for this topic.</p>
+        </div>
+        <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 24px; border-radius: 12px; max-width: 460px; width: 100%; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+          <h4 style="color: var(--text-main); font-size: 0.95rem; font-weight: 700; margin-bottom: 6px;">💡 Order a Custom YaadCard Deck!</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">Describe your topic or syllabus. We'll design, format, and print a custom deck specifically for you for just **₹250** (only ₹50 extra!).</p>
+          <button class="btn-primary-store" onclick="openCustomRequestWithSearch('${searchQuery.replace(/'/g, "\\'")}')" style="width: 100%; background: linear-gradient(135deg, #06b6d4, #0891b2); color: white;">
+            Order Custom "${searchQuery}" Deck
+          </button>
+        </div>
       </div>
     `;
+    renderPaginationControls(0);
     return;
   }
 
-  filtered.forEach(product => {
-    const card = document.createElement("div");
-    card.className = "product-card";
-    
-    // Clicking on card opens product page (except buttons)
-    card.addEventListener("click", (e) => {
-      if (e.target.closest("button") || e.target.closest("a")) return;
-      openProductDetail(product.id);
-    });
+  const totalItems = filtered.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  
+  if (currentPage > totalPages && totalPages > 0) {
+    currentPage = totalPages;
+  }
+  if (currentPage < 1) {
+    currentPage = 1;
+  }
 
-    card.innerHTML = `
-      <div class="card-image-box">
-        ${product.badge ? `<span class="card-badge ${product.isComingSoon ? 'soon' : (product.id === 'custom_deck' ? 'custom' : '')}">${product.badge}</span>` : ""}
-        <span class="card-badge-category">${product.category}</span>
-        <img src="${product.image}" alt="${product.name}" onerror="handleImageError(this, '${product.name}', '${product.theme}')">
-      </div>
-      <div class="card-details">
-        <h3 class="card-product-title">${product.name}</h3>
-        <p class="card-product-desc">${product.description}</p>
-        
-        <div class="card-product-meta">
-          <div class="meta-spec">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-            <span>${product.cardsCount} cards</span>
-          </div>
-          <div>Case Pack</div>
-        </div>
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+  const pageItems = filtered.slice(startIndex, endIndex);
 
-        <div class="card-product-pricing">
-          <span class="price-regular">₹${product.originalPrice}</span>
-          <span class="price-sale">₹${product.price}</span>
-        </div>
-
-        ${product.isComingSoon ? 
-          `<button class="btn-primary-store" disabled>Coming Soon</button>` : 
-          `<button class="btn-primary-store" onclick="event.stopPropagation(); addItemToCart('${product.id}')">Add to Cart</button>`
-        }
-      </div>
-    `;
-
-    storeProductGrid.appendChild(card);
+  pageItems.forEach(product => {
+    storeProductGrid.appendChild(createProductCard(product));
   });
+
+  renderPaginationControls(totalItems);
 }
+
+// Render pagination buttons
+function renderPaginationControls(totalItems) {
+  const controls = document.getElementById("pagination-controls");
+  if (!controls) return;
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  if (totalPages <= 1) {
+    controls.innerHTML = "";
+    return;
+  }
+
+  controls.innerHTML = `
+    <button class="btn-pagination" id="btn-prev-page" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(-1)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      <span>Previous</span>
+    </button>
+    <span class="page-indicator">Page ${currentPage} of ${totalPages}</span>
+    <button class="btn-pagination" id="btn-next-page" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(1)">
+      <span>Next</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  `;
+}
+
+window.changePage = function(delta) {
+  currentPage += delta;
+  renderCatalog();
+  document.getElementById("store-main-catalog").scrollIntoView({ behavior: "smooth" });
+};
+
+window.openCustomRequestWithSearch = function(query) {
+  const customSpecs = document.getElementById("desktop-custom-specs");
+  const modalSpecs = document.getElementById("custom-deck-specs");
+  
+  if (customSpecs) customSpecs.value = `Custom deck requirements: ${query}`;
+  if (modalSpecs) modalSpecs.value = `Custom deck requirements: ${query}`;
+  
+  addItemToCart("custom_deck");
+  switchToCheckoutView();
+};
 
 // Fallback for catalog images
 window.handleImageError = function(imgElement, productName, themeColor) {
@@ -342,26 +485,40 @@ window.handleImageError = function(imgElement, productName, themeColor) {
   `;
 };
 
-// Open Product Detail Screen (SPA Navigation)
-window.openProductDetail = function(productId) {
+// Render product detail screen DOM
+function showProductDetailUI(productId) {
   const product = PRODUCTS.find(p => p.id === productId);
   if (!product) return;
 
-  // Hide lists
-  storeHero.style.display = "none";
-  storeValueProps.style.display = "none";
-  storeMainCatalog.style.display = "none";
+  // Hide list blocks
+  if (storeHero) storeHero.style.display = "none";
+  if (storeValueProps) storeValueProps.style.display = "none";
+  if (storeMainCatalog) storeMainCatalog.style.display = "none";
+  
+  const videoSection = document.getElementById("store-videos");
+  if (videoSection) videoSection.style.display = "none";
+  
+  const featuredSection = document.getElementById("featured-decks-section");
+  if (featuredSection) featuredSection.style.display = "none";
 
-  // Show product detail view
   productDetailView.innerHTML = "";
   productDetailView.style.display = "block";
   window.scrollTo({ top: 0, behavior: "smooth" });
 
-  currentSlideIndex = 0;
-
-  // Build slide content (simulates cover + card front mock + card back mock)
   const productTitle = product.name;
   const themeColor = product.theme;
+
+  // Find related products (excluding current one, and not coming soon)
+  const relatedProducts = PRODUCTS.filter(p => p.id !== productId && !p.isComingSoon).slice(0, 4);
+  let relatedHtml = "";
+  if (relatedProducts.length > 0) {
+    relatedHtml = `
+      <div style="margin-top: 64px; border-top: 1px solid var(--border-color); padding-top: 48px;">
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--text-main); margin-bottom: 24px; text-align: left;">You May Also Like</h3>
+        <div class="product-grid" id="related-product-grid"></div>
+      </div>
+    `;
+  }
 
   productDetailView.innerHTML = `
     <button class="btn-back-catalog" onclick="closeProductDetail()">
@@ -370,64 +527,12 @@ window.openProductDetail = function(productId) {
     </button>
     
     <div class="product-details-container">
-      
-      <!-- Slideable gallery container (Left side) -->
       <div>
-        <div class="slideshow-container">
-          <button class="slideshow-arrow arrow-left" onclick="shiftSlide(-1)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          </button>
-          <button class="slideshow-arrow arrow-right" onclick="shiftSlide(1)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-          </button>
-          
-          <div class="slides-wrapper" id="detail-slides-wrapper">
-            <!-- Slide 1: Main Case Cover -->
-            <div class="slide-item">
-              <img src="${product.image}" alt="${product.name}" onerror="handleDetailImageFallback(this, '${product.name}', '${product.theme}')">
-            </div>
-            
-            <!-- Slide 2: CSS Styled Card Front Mockup -->
-            <div class="slide-item" style="background-color: #1e293b; padding: 24px;">
-              <div style="border: 2px solid var(--${themeColor}-primary, #ef4444); border-radius: 8px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; box-shadow: inset 0 0 20px rgba(0,0,0,0.4);">
-                <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--${themeColor}-primary, #ef4444); font-weight: 700;">yaadcard</div>
-                <div style="font-family: var(--font-display); font-size: 1.6rem; text-align: center; color: var(--text-main); font-weight: 700; line-height: 1.2;">
-                  ${productTitle}
-                </div>
-                <div style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">Tuck Case Cards Pack</div>
-              </div>
-            </div>
-            
-            <!-- Slide 3: CSS Styled Card Back Mockup -->
-            <div class="slide-item" style="background-color: #0f172a; padding: 24px;">
-              <div style="border: 1px solid var(--border-color); border-radius: 8px; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 16px;">
-                <div style="font-size: 0.7rem; color: var(--${themeColor}-primary, #ef4444); font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px;">Key Recall Prompt</div>
-                <div style="font-size: 0.8rem; color: #e2e8f0; line-height: 1.4; overflow-y: auto; flex: 1; padding: 6px 0;">
-                  <strong>Review Concept</strong><br>
-                  • Highlights core active recall principles.<br>
-                  • Visual tables, summaries, and key formulations.
-                </div>
-                <div style="font-size: 0.6rem; color: var(--text-muted); text-align: right;">Card #01 / Back</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Thumbnails index dots -->
-        <div class="thumbnails-container">
-          <div class="thumbnail-dot active" onclick="jumpToSlide(0)" id="thumb-dot-0">
-            <img src="${product.image}" onerror="this.style.display='none'; this.parentElement.style.background='var(--bg-secondary)';">
-          </div>
-          <div class="thumbnail-dot" onclick="jumpToSlide(1)" id="thumb-dot-1">
-            <div style="width:100%; height:100%; background: #1e293b; display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:var(--text-muted);">FRONT</div>
-          </div>
-          <div class="thumbnail-dot" onclick="jumpToSlide(2)" id="thumb-dot-2">
-            <div style="width:100%; height:100%; background: #0f172a; display:flex; align-items:center; justify-content:center; font-size:0.6rem; color:var(--text-muted);">BACK</div>
-          </div>
+        <div class="product-image-detail-wrapper" style="width: 100%; border-radius: 12px; overflow: hidden; background: #0b0f19; border: 1px solid var(--border-color); aspect-ratio: 5 / 6; display: flex; align-items: center; justify-content: center;">
+          <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="handleDetailImageFallback(this, '${product.name}', '${product.theme}')">
         </div>
       </div>
       
-      <!-- Right metadata content -->
       <div class="details-info-box">
         <span class="details-category">${product.category}</span>
         <h2 class="details-title">${product.name}</h2>
@@ -461,49 +566,59 @@ window.openProductDetail = function(productId) {
           }
         </div>
       </div>
-      
     </div>
+    
+    ${relatedHtml}
   `;
+
+  // Render related products cards into grid slot
+  const relatedGrid = document.getElementById("related-product-grid");
+  if (relatedGrid) {
+    relatedProducts.forEach(rp => {
+      relatedGrid.appendChild(createProductCard(rp));
+    });
+  }
+}
+
+// Show Catalog UI
+function showCatalogUI() {
+  if (productDetailView) productDetailView.style.display = "none";
+  
+  if (storeHero) storeHero.style.display = "block";
+  if (storeValueProps) storeValueProps.style.display = "block";
+  if (storeMainCatalog) storeMainCatalog.style.display = "block";
+  
+  const videoSection = document.getElementById("store-videos");
+  if (videoSection) videoSection.style.display = "block";
+  
+  renderFeaturedDecks();
+  renderCatalog();
+}
+
+// Open Product Detail Screen (SPA Navigation with history state push)
+window.openProductDetail = function(productId) {
+  // Push state to browser history stack to prevent hard back closes
+  history.pushState({ view: "product", productId: productId }, "", "#product-" + productId);
+  showProductDetailUI(productId);
 };
 
 // Return from detail view to main gallery catalog
 window.closeProductDetail = function() {
-  productDetailView.style.display = "none";
-  
-  storeHero.style.display = "block";
-  storeValueProps.style.display = "block";
-  storeMainCatalog.style.display = "block";
-  
-  // Refilter catalog if search typed
-  renderCatalog();
-};
-
-// Slideshow mechanics
-window.shiftSlide = function(offset) {
-  currentSlideIndex = (currentSlideIndex + offset + 3) % 3;
-  updateSlideshowPosition();
-};
-
-window.jumpToSlide = function(index) {
-  currentSlideIndex = index;
-  updateSlideshowPosition();
-};
-
-function updateSlideshowPosition() {
-  const wrapper = document.getElementById("detail-slides-wrapper");
-  if (wrapper) {
-    wrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
-    
-    // Update thumbnail highlights
-    document.querySelectorAll(".thumbnail-dot").forEach((dot, idx) => {
-      if (idx === currentSlideIndex) {
-        dot.classList.add("active");
-      } else {
-        dot.classList.remove("active");
-      }
-    });
+  if (location.hash.startsWith("#product-")) {
+    history.back(); // Triggers popstate listener, which calls showCatalogUI
+  } else {
+    showCatalogUI();
   }
-}
+};
+
+// Intercept popstate transitions (hardware back / browser back buttons)
+window.addEventListener("popstate", (event) => {
+  if (event.state && event.state.view === "product") {
+    showProductDetailUI(event.state.productId);
+  } else {
+    showCatalogUI();
+  }
+});
 
 // Custom detail image fallback logic
 window.handleDetailImageFallback = function(imgElement, productName, themeColor) {
@@ -551,12 +666,10 @@ window.switchToCheckoutView = function() {
   drawerViewCheckout.classList.add("active");
   drawerViewSuccess.classList.remove("active");
 
-  // Populate checkout summaries
   const totals = calculateCartTotals();
   document.getElementById("checkout-total-qty").textContent = `${totals.qty} deck${totals.qty === 1 ? '' : 's'}`;
   document.getElementById("checkout-total-price").textContent = `₹${totals.total}`;
 
-  // Check if Custom Flashcard is in the cart to show custom textarea
   const hasCustom = CART.some(item => item.product.id === "custom_deck");
   if (hasCustom) {
     customCheckoutDetails.style.display = "flex";
@@ -585,7 +698,6 @@ window.addItemToCart = function(productId) {
   saveCartToStorage();
   updateCartUI();
   
-  // Slide open the cart drawer to show item added
   cartOverlay.classList.add("active");
   switchToCartView();
 };
@@ -609,16 +721,20 @@ window.adjustCartQty = function(productId, delta) {
   }
 };
 
-// Calculate pricing logic: single ₹120, group of 5 ₹500 (no shipping)
+// Calculate pricing logic: standard cards 200, custom cards 250, Buy 5 Get 1 Free
 function calculateCartTotals() {
   let qty = CART.reduce((sum, item) => sum + item.qty, 0);
   
-  const bundles = Math.floor(qty / 5);
-  const singles = qty % 5;
+  // Buy 5 Get 1 Free: For every 6 decks in cart, 1 deck is free (saving 200)
+  const freeDecks = Math.floor(qty / 6);
   
-  const subtotal = qty * 120;
-  const savings = bundles * 100; // Bundle price is 500, instead of 600, saving 100 per bundle
-  const total = subtotal - savings;
+  let subtotal = 0;
+  CART.forEach(item => {
+    subtotal += item.product.price * item.qty;
+  });
+
+  const savings = freeDecks * 200;
+  const total = Math.max(0, subtotal - savings);
   const shipping = 0;
 
   return { qty, subtotal, savings, shipping, total };
@@ -627,11 +743,8 @@ function calculateCartTotals() {
 // Update DOM elements in cart drawer
 function updateCartUI() {
   const totals = calculateCartTotals();
-  
-  // Badge count
   cartBadge.textContent = totals.qty;
 
-  // Empty state vs listings rendering
   if (CART.length === 0) {
     cartItemsWrapper.innerHTML = `
       <div class="cart-empty-state">
@@ -643,7 +756,6 @@ function updateCartUI() {
     btnCheckoutTrigger.disabled = true;
     cartBundleTip.style.display = "none";
     
-    // Set pricing summaries
     cartSubtotal.textContent = "₹0";
     cartSavings.textContent = "-₹0";
     if (cartShipping) cartShipping.textContent = "₹0";
@@ -664,7 +776,7 @@ function updateCartUI() {
       <div class="cart-item-details">
         <div>
           <div class="cart-item-title">${item.product.name}</div>
-          <span class="cart-item-category">${item.product.category}</span>
+          <span class="cart-item-category">${item.product.category || 'Deck'}</span>
         </div>
         <div class="cart-item-controls">
           <div class="qty-selector">
@@ -682,31 +794,30 @@ function updateCartUI() {
     cartItemsWrapper.appendChild(itemEl);
   });
 
-  // Set subtotal calculations
   cartSubtotal.textContent = `₹${totals.subtotal}`;
   cartSavings.textContent = `-₹${totals.savings}`;
   if (cartShipping) cartShipping.textContent = `₹${totals.shipping}`;
   cartTotal.textContent = `₹${totals.total}`;
 
-  // Interactive dynamic bundle promotion helper in cart
-  const singlesLeft = totals.qty % 5;
+  // Interactive dynamic bundle promotion helper in cart: Buy 5 Get 1 Free (group of 6)
+  const singlesLeft = totals.qty % 6;
   if (totals.savings > 0) {
     if (singlesLeft === 0) {
-      cartBundleTip.innerHTML = `🎉 <strong>Bundle applied!</strong> You saved ₹${totals.savings} on your pack of ${totals.qty}!`;
+      cartBundleTip.innerHTML = `🎉 <strong>Offer applied!</strong> You got ${Math.floor(totals.qty / 6)} free deck(s) on your pack of ${totals.qty}!`;
       cartBundleTip.style.color = "#10b981";
       cartBundleTip.style.background = "rgba(16, 185, 129, 0.06)";
       cartBundleTip.style.borderColor = "rgba(16, 185, 129, 0.2)";
     } else {
-      const needed = 5 - singlesLeft;
-      cartBundleTip.innerHTML = `💡 Add <strong>${needed}</strong> more deck${needed > 1 ? 's' : ''} to save another <strong>₹100</strong>!`;
+      const needed = 6 - singlesLeft;
+      cartBundleTip.innerHTML = `💡 Add <strong>${needed}</strong> more deck${needed > 1 ? 's' : ''} to get **1 FREE deck**!`;
       cartBundleTip.style.color = "#f59e0b";
       cartBundleTip.style.background = "rgba(245, 158, 11, 0.06)";
       cartBundleTip.style.borderColor = "rgba(245, 158, 11, 0.2)";
     }
     cartBundleTip.style.display = "block";
   } else {
-    const needed = 5 - totals.qty;
-    cartBundleTip.innerHTML = `💡 Add <strong>${needed}</strong> more deck${needed > 1 ? 's' : ''} to get the <strong>5-deck bundle for ₹500</strong>!`;
+    const needed = 6 - totals.qty;
+    cartBundleTip.innerHTML = `💡 Add <strong>${needed}</strong> more deck${needed > 1 ? 's' : ''} to get **1 FREE deck** (Buy 5 Get 1 Free)!`;
     cartBundleTip.style.color = "#f59e0b";
     cartBundleTip.style.background = "rgba(245, 158, 11, 0.06)";
     cartBundleTip.style.borderColor = "rgba(245, 158, 11, 0.2)";
@@ -725,7 +836,7 @@ window.handleCartImageError = function(img, themeColor) {
   `;
 };
 
-// Local storage storage
+// Local storage helpers
 function saveCartToStorage() {
   const serializable = CART.map(item => ({ productId: item.product.id, qty: item.qty }));
   localStorage.setItem("yaadcard_cart", JSON.stringify(serializable));
@@ -734,17 +845,13 @@ function saveCartToStorage() {
 function loadCartFromStorage() {
   const saved = localStorage.getItem("yaadcard_cart");
   if (!saved) return;
-  
   try {
     const parsed = JSON.parse(saved);
     CART = [];
     parsed.forEach(item => {
-      const product = PRODUCTS.find(p => p.id === item.productId);
+      const product = DEFAULT_PRODUCTS.find(p => p.id === item.productId);
       if (product) {
-        CART.push({
-          product: product,
-          qty: item.qty
-        });
+        CART.push({ product, qty: item.qty });
       }
     });
   } catch (e) {
@@ -763,8 +870,6 @@ window.processOrderCheckout = function(e) {
   const specs = customDeckSpecs.value.trim();
 
   const totals = calculateCartTotals();
-
-  // Create detailed order items summary
   const itemsText = CART.map(item => `${item.qty}x ${item.product.name}`).join(", ");
 
   const preorder = {
@@ -772,7 +877,7 @@ window.processOrderCheckout = function(e) {
     name: name,
     email: email,
     phone: phone,
-    product: itemsText, // Stores item list here for backwards compatibility with admin log layout
+    product: itemsText,
     quantity: totals.qty,
     customDetails: CART.some(item => item.product.id === "custom_deck") ? specs : "",
     address: address,
@@ -781,12 +886,20 @@ window.processOrderCheckout = function(e) {
     status: "Pending"
   };
 
-  // Save to preorders list
   const preorders = JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
   preorders.push(preorder);
   localStorage.setItem("yaadcard_preorders", JSON.stringify(preorders));
 
-  // Show Success Panel
+  if (window.db) {
+    window.db.collection("preorders").doc(preorder.id.toString()).set(preorder)
+      .then(() => {
+        console.log("Pre-order saved to Firestore successfully.");
+      })
+      .catch((error) => {
+        console.error("Error saving pre-order to Firestore: ", error);
+      });
+  }
+
   document.getElementById("success-client-name").textContent = name;
   document.getElementById("success-total-bill").textContent = `₹${totals.total}`;
   document.getElementById("success-client-phone").textContent = phone;
@@ -794,7 +907,6 @@ window.processOrderCheckout = function(e) {
   drawerViewCheckout.classList.remove("active");
   drawerViewSuccess.classList.add("active");
 
-  // Empty cart
   CART = [];
   saveCartToStorage();
   updateCartUI();
@@ -804,7 +916,6 @@ window.processOrderCheckout = function(e) {
 function debounceSearchLog(query) {
   clearTimeout(searchLogTimeout);
   if (!query || query.length < 2) return;
-
   searchLogTimeout = setTimeout(() => {
     logSearch(query);
   }, 1500);
@@ -816,7 +927,7 @@ function logSearch(query) {
 
   const resultsCount = PRODUCTS.filter(product => {
     return product.name.toLowerCase().includes(query) ||
-           product.category.toLowerCase().includes(query) ||
+           (product.category && product.category.toLowerCase().includes(query)) ||
            product.description.toLowerCase().includes(query);
   }).length;
 
@@ -837,15 +948,143 @@ function logSearch(query) {
   }
 
   localStorage.setItem("yaadcard_searches", JSON.stringify(searches));
+
+  if (window.db) {
+    const searchDocRef = window.db.collection("searches").doc(query.toLowerCase());
+    window.db.runTransaction((transaction) => {
+      return transaction.get(searchDocRef).then((sfDoc) => {
+        if (!sfDoc.exists) {
+          transaction.set(searchDocRef, {
+            query: query,
+            timestamp: new Date().toISOString(),
+            count: 1,
+            resultsCount: resultsCount
+          });
+        } else {
+          const newCount = (sfDoc.data().count || 0) + 1;
+          transaction.update(searchDocRef, {
+            count: newCount,
+            timestamp: new Date().toISOString(),
+            resultsCount: resultsCount
+          });
+        }
+      });
+    }).then(() => {
+      console.log("Search statistics synced to Firestore.");
+    }).catch((err) => {
+      console.error("Search sync transaction failed: ", err);
+    });
+  }
 }
 
 // Layout helper anchors scroll
 window.scrollToProducts = function() {
-  document.getElementById("collections-catalog").scrollIntoView({ behavior: "smooth" });
+  document.getElementById("store-main-catalog").scrollIntoView({ behavior: "smooth" });
 };
 
 window.openCustomRequest = function() {
-  // Add custom deck to cart directly and launch checkout
+  addItemToCart("custom_deck");
+  switchToCheckoutView();
+};
+
+// Search Dropdown setup
+function setupSearchDropdowns() {
+  const navInput = document.getElementById("nav-search");
+  const navDropdown = document.getElementById("nav-search-dropdown");
+  const desktopInput = document.getElementById("desktop-catalog-search");
+  const desktopDropdown = document.getElementById("desktop-search-dropdown");
+
+  function handleSearchInput(input, dropdown) {
+    const value = input.value.trim().toLowerCase();
+    if (!value || value.length < 2) {
+      dropdown.classList.remove("active");
+      dropdown.innerHTML = "";
+      return;
+    }
+
+    const matches = PRODUCTS.filter(p => 
+      p.name.toLowerCase().includes(value) || 
+      (p.category && p.category.toLowerCase().includes(value)) ||
+      p.description.toLowerCase().includes(value)
+    );
+
+    dropdown.classList.add("active");
+    dropdown.innerHTML = "";
+
+    if (matches.length === 0) {
+      dropdown.innerHTML = `
+        <div class="search-dropdown-empty">
+          No matching decks.<br>
+          <button class="search-dropdown-empty-btn" onclick="openCustomRequestWithSearch('${value.replace(/'/g, "\\'")}')">
+            Create Custom "${value}" Deck (₹250)
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    matches.slice(0, 5).forEach(product => {
+      const item = document.createElement("div");
+      item.className = "search-dropdown-item";
+      item.innerHTML = `
+        <div class="search-item-img">
+          <img src="${product.image}" onerror="handleCartImageError(this, '${product.theme}')">
+        </div>
+        <div class="search-item-info">
+          <div class="search-item-name">${product.name}</div>
+          <div class="search-item-meta">${product.cardsCount} cards • ${product.category || 'Deck'}</div>
+        </div>
+        <div class="search-item-price">₹${product.price}</div>
+      `;
+      item.addEventListener("click", () => {
+        dropdown.classList.remove("active");
+        input.value = "";
+        openProductDetail(product.id);
+      });
+      dropdown.appendChild(item);
+    });
+  }
+
+  if (navInput && navDropdown) {
+    navInput.addEventListener("input", () => handleSearchInput(navInput, navDropdown));
+    document.addEventListener("click", (e) => {
+      if (!navInput.contains(e.target) && !navDropdown.contains(e.target)) {
+        navDropdown.classList.remove("active");
+      }
+    });
+  }
+
+  if (desktopInput && desktopDropdown) {
+    desktopInput.addEventListener("input", () => handleSearchInput(desktopInput, desktopDropdown));
+    document.addEventListener("click", (e) => {
+      if (!desktopInput.contains(e.target) && !desktopDropdown.contains(e.target)) {
+        desktopDropdown.classList.remove("active");
+      }
+    });
+  }
+}
+
+window.handleDesktopSearch = function(value) {
+  const topSearch = document.getElementById("nav-search");
+  if (topSearch) {
+    topSearch.value = value;
+    searchQuery = value.trim().toLowerCase();
+    currentPage = 1;
+    renderCatalog();
+    debounceSearchLog(searchQuery);
+  }
+};
+
+window.createCustomDeckFromInput = function() {
+  const specsText = document.getElementById("desktop-custom-specs").value.trim();
+  if (!specsText) {
+    alert("Please enter your custom deck requirements.");
+    return;
+  }
+  const modalSpecs = document.getElementById("custom-deck-specs");
+  if (modalSpecs) {
+    modalSpecs.value = specsText;
+  }
   addItemToCart("custom_deck");
   switchToCheckoutView();
 };

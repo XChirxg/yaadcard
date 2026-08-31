@@ -1,0 +1,19 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Firebase cache
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# Environment and OS
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+.vscode/
+.idea/

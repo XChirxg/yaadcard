@@ -1,0 +1,906 @@
+{
+  "showcase": {
+    "name": "Showcase Deck",
+    "subject": "Feature Showcase",
+    "website": "yaadcard.web.app",
+    "mrp": "250",
+    "printMode": "duplex",
+    "indexCard": true,
+    "packaging": {
+      "title": "SHOWCASE PACK",
+      "subtitle": "ALL CAPABILITIES DEMO",
+      "mrp": "250",
+      "website": "yaadcard.web.app",
+      "coverImage": "",
+      "description": "This is a feature-rich showcase deck that demonstrates all capabilities of the YaadCard Creator, featuring 36 premium unique card templates with LaTeX, charts, timelines, game stats, code blocks, and recipe checklists.",
+      "stripeColors": [
+        "#06b6d4",
+        "#f97316",
+        "#a855f7",
+        "#10b981",
+        "#eab308"
+      ]
+    },
+    "cards": [
+      {
+        "id": 1,
+        "theme": "cyan",
+        "template": "standard",
+        "front": {
+          "title": "Weighted Avg Cost of Capital (WACC)",
+          "tagline": "Corporate Finance Fundamentals",
+          "category": "FINANCE"
+        },
+        "back": {
+          "title": "Weighted Average Cost of Capital",
+          "tagline": "Corporate Finance Discount Rate",
+          "summary": "The discount rate used to value corporate cash flows, representing the average return expected by all providers of capital (equity and debt).",
+          "key_points": [
+            "Formula: $WACC = \\frac{E}{V}R_e + \\frac{D}{V}R_d(1 - T_c)$",
+            "Weightages represent market values of debt ($D$) and equity ($E$)."
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "theme": "purple",
+        "template": "quote",
+        "front": {
+          "title": "Control & Perspective",
+          "tagline": "Marcus Aurelius Wisdom",
+          "category": "PHILOSOPHY"
+        },
+        "back": {
+          "title": "Meditations, Book IV",
+          "tagline": "Stoic Perspective on Control",
+          "summary": "You have power over your mind - not outside events. Realize this, and you will find strength.",
+          "citation": {
+            "source": "Marcus Aurelius",
+            "ref": "Meditations, IV.3"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "theme": "orange",
+        "template": "game",
+        "front": {
+          "title": "Frost Wyrm",
+          "tagline": "LEGENDARY MYSTICAL BEAST",
+          "category": "MONSTER"
+        },
+        "back": {
+          "title": "Frost Wyrm Guardian",
+          "tagline": "Ice Plains Sentinel",
+          "hp": "HP 450",
+          "summary": "A colossal dragon of ancient times, frozen under the Northern glaciers and reawakened by shadow sorcery.",
+          "game_stats": {
+            "atk": 90,
+            "def": 85,
+            "spd": 60,
+            "mana": 95
+          }
+        }
+      },
+      {
+        "id": 4,
+        "theme": "emerald",
+        "template": "history",
+        "front": {
+          "title": "The French Revolution",
+          "tagline": "Liberty, Equality, Fraternity",
+          "category": "HISTORY"
+        },
+        "back": {
+          "title": "Milestones of 1789",
+          "tagline": "Fall of the Ancient Regime",
+          "summary": "A watershed period of social and political upheaval in France that led to the collapse of the monarchy.",
+          "timeline": {
+            "items": [
+              {
+                "label": "May 1789",
+                "detail": "Estates-General convenes at Versailles"
+              },
+              {
+                "label": "June 1789",
+                "detail": "Tennis Court Oath taken by Third Estate"
+              },
+              {
+                "label": "July 1789",
+                "detail": "Storming of the Bastille prison fortress"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 5,
+        "theme": "gold",
+        "template": "formula",
+        "front": {
+          "title": "E = mc^2",
+          "tagline": "Mass-Energy Equivalence",
+          "category": "PHYSICS"
+        },
+        "back": {
+          "title": "Mass-Energy Equivalence",
+          "tagline": "Relativity Theory",
+          "summary": "Einstein's famous equation expressing that mass and energy are the same physical entity and can be converted into each other.",
+          "variable_legend": {
+            "items": [
+              {
+                "sym": "E",
+                "def": "Relativistic kinetic energy of system"
+              },
+              {
+                "sym": "m",
+                "def": "Relativistic mass of particle"
+              },
+              {
+                "sym": "c",
+                "def": "Speed of light in vacuum ($3 \\times 10^8 \\text{ m/s}$)"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 6,
+        "theme": "cyan",
+        "template": "comparison",
+        "front": {
+          "title": "SQL Databases",
+          "tagline": "NoSQL Databases",
+          "category": "COMPUTING"
+        },
+        "back": {
+          "title": "SQL vs NoSQL Architecture",
+          "tagline": "Relational vs Non-Relational structures",
+          "summary": "SQL databases are table-based and relational with schemas. NoSQL databases are document-based, key-value, wide-column, or graph databases with dynamic schemas.",
+          "table": {
+            "headers": [
+              "Feature",
+              "SQL (Relational)",
+              "NoSQL (Distributed)"
+            ],
+            "rows": [
+              [
+                "Schema",
+                "Rigid Schema",
+                "Dynamic Schema"
+              ],
+              [
+                "Scaling",
+                "Vertical (Hardware)",
+                "Horizontal (Clusters)"
+              ],
+              [
+                "Queries",
+                "Structured SQL",
+                "Unstructured API"
+              ]
+            ]
+          }
+        }
+      },
+      {
+        "id": 7,
+        "theme": "purple",
+        "template": "vocabulary",
+        "front": {
+          "title": "Serendipity",
+          "tagline": "An unexpected fortunate discovery",
+          "category": "ENGLISH"
+        },
+        "back": {
+          "title": "Serendipity /ˌsɛrənˈdɪpɪti/",
+          "tagline": "Linguistic Terminology",
+          "summary": "The occurrence and development of events by chance in a happy or beneficial way.",
+          "term_lookup": {
+            "phonetic": "/ˌsɛrənˈdɪpɪti/",
+            "class": "noun",
+            "origin": "Coined by Horace Walpole in 1754"
+          }
+        }
+      },
+      {
+        "id": 8,
+        "theme": "orange",
+        "template": "process",
+        "front": {
+          "title": "Photosynthesis Flow",
+          "tagline": "Light Reactions Process",
+          "category": "BIOLOGY"
+        },
+        "back": {
+          "title": "Photosynthesis Pathways",
+          "tagline": "Process Flow Sequence",
+          "summary": "The biochemical pathway converting solar light into chemical energy inside plant thylakoids.",
+          "timeline": {
+            "items": [
+              {
+                "label": "Step 1",
+                "detail": "Photon absorption at Photosystem II"
+              },
+              {
+                "label": "Step 2",
+                "detail": "Water splitting ($H_2O \\to O_2 + H^+$)"
+              },
+              {
+                "label": "Step 3",
+                "detail": "Electron transport chain to Photosystem I"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 9,
+        "theme": "emerald",
+        "template": "key_value",
+        "front": {
+          "title": "HTTP Status Codes",
+          "tagline": "Client & Server Communication",
+          "category": "NETWORK"
+        },
+        "back": {
+          "title": "HTTP Response Protocol Status",
+          "tagline": "Standardized Codes List",
+          "summary": "Status codes issued by server response headers to direct web client behaviors.",
+          "table": {
+            "headers": [
+              "Code",
+              "Category",
+              "Meaning / Usage"
+            ],
+            "rows": [
+              [
+                "200",
+                "Success",
+                "Request completed OK"
+              ],
+              [
+                "301",
+                "Redirect",
+                "Permanent URI relocation"
+              ],
+              [
+                "404",
+                "Client Error",
+                "Requested resource not found"
+              ]
+            ]
+          }
+        }
+      },
+      {
+        "id": 10,
+        "theme": "gold",
+        "template": "code_snippet",
+        "front": {
+          "title": "Binary Search",
+          "tagline": "O(log n) Search Algorithm",
+          "category": "ALGORITHMS"
+        },
+        "back": {
+          "title": "Binary Search Implementation",
+          "tagline": "Dividing search space in half",
+          "summary": "Search a sorted array by repeatedly dividing the search interval in half.",
+          "diagram": "low = 0, high = len - 1\nwhile low <= high:\n    mid = (low + high) // 2\n    if arr[mid] == key:\n        return mid"
+        }
+      },
+      {
+        "id": 11,
+        "theme": "cyan",
+        "template": "anatomy",
+        "front": {
+          "title": "Human Heart Valves",
+          "tagline": "Cardiovascular Blood Circulation Flow",
+          "category": "ANATOMY"
+        },
+        "back": {
+          "title": "Mitral & Tricuspid Valves",
+          "tagline": "Valvular Openings Coordinates",
+          "summary": "The valvular openings that prevent backward blood leakage during heart contractions.",
+          "location_pin": {
+            "name": "Left Atrium Ventricle Junction",
+            "coords": "Mitral Valve coordinates"
+          }
+        }
+      },
+      {
+        "id": 12,
+        "theme": "purple",
+        "template": "mcq",
+        "front": {
+          "title": "Mitochondria Function Question",
+          "tagline": "Cellular Biology Trivia Practice",
+          "category": "BIOLOGY"
+        },
+        "back": {
+          "title": "Multiple Choice Practice",
+          "tagline": "Cellular Organelle Physiology",
+          "summary": "Question: What is the primary function of mitochondria? Options:\nA) Protein Synthesis  B) ATP Production  C) Waste Storage",
+          "checklist": {
+            "items": [
+              {
+                "text": "A) Protein Synthesis (Incorrect)",
+                "checked": false
+              },
+              {
+                "text": "B) ATP Production (Correct)",
+                "checked": true
+              },
+              {
+                "text": "C) Waste Storage (Incorrect)",
+                "checked": false
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 13,
+        "theme": "orange",
+        "template": "chart_sheet",
+        "front": {
+          "title": "GDP Growth Comparison",
+          "tagline": "Economic Market Trends",
+          "category": "ECONOMICS"
+        },
+        "back": {
+          "title": "GDP Growth Comparison Stats",
+          "tagline": "Selected Markets Performance",
+          "summary": "Year-over-year percentage GDP performance indicators across major world economies.",
+          "chart": {
+            "bars": [
+              {
+                "x": 10,
+                "y": 10,
+                "h": 28,
+                "color": "#06b6d4",
+                "tx": 14,
+                "lbl": "US"
+              },
+              {
+                "x": 30,
+                "y": 18,
+                "h": 20,
+                "color": "#f97316",
+                "tx": 34,
+                "lbl": "EU"
+              },
+              {
+                "x": 50,
+                "y": 5,
+                "h": 33,
+                "color": "#10b981",
+                "tx": 54,
+                "lbl": "IN"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 14,
+        "theme": "emerald",
+        "template": "map_locations",
+        "front": {
+          "title": "Ancient Roman Empire",
+          "tagline": "Roman Empire border expansion map",
+          "category": "GEOGRAPHY"
+        },
+        "back": {
+          "title": "Rome Imperial Coordinates",
+          "tagline": "Capital of the Western World",
+          "summary": "The absolute location coordinate pins representing the Roman Imperial Administration.",
+          "location_pin": {
+            "name": "Rome, Italy",
+            "coords": "41.9028° N, 12.4964° E"
+          }
+        }
+      },
+      {
+        "id": 15,
+        "theme": "gold",
+        "template": "periodic_element",
+        "front": {
+          "title": "Au",
+          "tagline": "Gold Element Properties",
+          "category": "79"
+        },
+        "back": {
+          "title": "Gold Element Profile (Au)",
+          "tagline": "Noble Metal Characteristics",
+          "summary": "A transition metal that is highly malleable, ductile, and resistant to corrosion.",
+          "key_points": [
+            "Atomic Number: 79",
+            "Atomic Weight: 196.967 u"
+          ]
+        }
+      },
+      {
+        "id": 16,
+        "theme": "cyan",
+        "template": "musical_notation",
+        "front": {
+          "title": "Cmaj7 Chord",
+          "tagline": "C Major Seventh Harmony",
+          "category": "MUSIC THEORY"
+        },
+        "back": {
+          "title": "C Major Seventh Structure",
+          "tagline": "Chord Tone Ratios",
+          "summary": "A major seventh chord constructed using a root, major third, perfect fifth, and major seventh.",
+          "key_points": [
+            "Notes: C - E - G - B",
+            "Intervals: Root - M3 - P5 - M7"
+          ]
+        }
+      },
+      {
+        "id": 17,
+        "theme": "purple",
+        "template": "law_statute",
+        "front": {
+          "title": "Brown v. Board of Education",
+          "tagline": "Equal Protection Clause Case",
+          "category": "LAW"
+        },
+        "back": {
+          "title": "Brown v. Board of Education Case Summary",
+          "tagline": "Segregation Statute Review",
+          "summary": "A landmark decision of the U.S. Supreme Court in which the Court ruled that U.S. state laws establishing racial segregation in public schools are unconstitutional.",
+          "citation": {
+            "source": "Supreme Court of the US",
+            "ref": "347 U.S. 483 (1954)"
+          }
+        }
+      },
+      {
+        "id": 18,
+        "theme": "orange",
+        "template": "biography",
+        "front": {
+          "title": "Ada Lovelace",
+          "tagline": "The First Computer Programmer",
+          "category": "BIOGRAPHY"
+        },
+        "back": {
+          "title": "Ada Lovelace Profile",
+          "tagline": "Analytical Engine Programmer",
+          "summary": "An English mathematician and writer, chiefly known for her work on Charles Babbage's proposed mechanical general-purpose computer, the Analytical Engine.",
+          "timeline": {
+            "items": [
+              {
+                "label": "1815",
+                "detail": "Born in London to Lord Byron"
+              },
+              {
+                "label": "1843",
+                "detail": "Published notes on Analytical Engine, writing first algorithm"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 19,
+        "theme": "emerald",
+        "template": "astronomy_star",
+        "front": {
+          "title": "Betelgeuse Star",
+          "tagline": "Orion Red Supergiant star",
+          "category": "ASTRONOMY"
+        },
+        "back": {
+          "title": "Betelgeuse Constellation Position",
+          "tagline": "Alpha Orionis Metrics",
+          "summary": "A red supergiant of spectral type M1-2 and one of the largest stars visible to the naked eye.",
+          "location_pin": {
+            "name": "Orion Constellation",
+            "coords": "RA 05h 55m 10.3s, Dec +07° 24′ 25″"
+          }
+        }
+      },
+      {
+        "id": 20,
+        "theme": "gold",
+        "template": "medical_drug",
+        "front": {
+          "title": "Aspirin",
+          "tagline": "Salicylate NSAID drug properties",
+          "category": "MEDICINE"
+        },
+        "back": {
+          "title": "Aspirin Pharmacology",
+          "tagline": "Acetylsalicylic Acid Overview",
+          "summary": "An NSAID drug used to reduce pain, fever, and inflammation, and as an antiplatelet agent.",
+          "key_points": [
+            "Mechanism: Irreversible inhibition of Cyclooxygenase (COX-1 & COX-2)",
+            "Common dosage: 75-325mg daily"
+          ]
+        }
+      },
+      {
+        "id": 21,
+        "theme": "cyan",
+        "template": "architectural_style",
+        "front": {
+          "title": "Gothic Style",
+          "tagline": "Medieval Ribbed Vaults Landmarks",
+          "category": "ARCHITECTURE"
+        },
+        "back": {
+          "title": "Gothic Structural Innovation",
+          "tagline": "Pointed Arches & Flying Buttresses",
+          "summary": "An architectural style that flourished in Europe during the High and Late Middle Ages, characterized by pointed arches, ribbed vaults, and flying buttresses.",
+          "timeline": {
+            "items": [
+              {
+                "label": "1140",
+                "detail": "Basilica of Saint-Denis choir constructed"
+              },
+              {
+                "label": "1163",
+                "detail": "Notre-Dame de Paris foundation laid"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 22,
+        "theme": "purple",
+        "template": "military_battle",
+        "front": {
+          "title": "Battle of Waterloo",
+          "tagline": "Napoleonic Wars Final Defeat",
+          "category": "MILITARY"
+        },
+        "back": {
+          "title": "Battle of Waterloo Conflict Summary",
+          "tagline": "Collapse of the French First Empire",
+          "summary": "A battle fought on Sunday, 18 June 1815, near Waterloo in Belgium, marking the final defeat of Napoleon Bonaparte.",
+          "timeline": {
+            "items": [
+              {
+                "label": "11:30 AM",
+                "detail": "French attack at Hougoumont villa"
+              },
+              {
+                "label": "1:30 PM",
+                "detail": "D'Erlon's infantry corp charge"
+              },
+              {
+                "label": "4:30 PM",
+                "detail": "Prussian corps under Blücher arrive"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 23,
+        "theme": "orange",
+        "template": "recipe_card",
+        "front": {
+          "title": "Classic Margherita",
+          "tagline": "Neapolitan Pizza Recipe",
+          "category": "CULINARY"
+        },
+        "back": {
+          "title": "Neapolitan Pizza Recipe Ingredients",
+          "tagline": "Classic Italian Dough & Sauce Setup",
+          "summary": "A simple pizza from Naples featuring tomatoes, fresh sliced mozzarella, basil, and extra virgin olive oil.",
+          "checklist": {
+            "items": [
+              {
+                "text": "300g Tipo 00 Flour dough base",
+                "checked": true
+              },
+              {
+                "text": "San Marzano canned tomatoes crush",
+                "checked": true
+              },
+              {
+                "text": "Fresh Mozzarella di Bufala rounds",
+                "checked": false
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 24,
+        "theme": "emerald",
+        "template": "software_design",
+        "front": {
+          "title": "Singleton Pattern",
+          "tagline": "Creational Design Patterns",
+          "category": "SOFTWARE DESIGN"
+        },
+        "back": {
+          "title": "Singleton Pattern Class Diagram",
+          "tagline": "Single instance object construction",
+          "summary": "Restricts the instantiation of a class to one 'single' instance and provides a global point of access.",
+          "diagram": "class Singleton:\n  _instance = None\n  @classmethod\n  def get_instance(cls):\n    if not cls._instance:\n      cls._instance = Singleton()\n    return cls._instance"
+        }
+      },
+      {
+        "id": 25,
+        "theme": "gold",
+        "template": "philosophy_argument",
+        "front": {
+          "title": "Ship of Theseus",
+          "tagline": "The Paradox of Identity",
+          "category": "PHILOSOPHY"
+        },
+        "back": {
+          "title": "Ship of Theseus Paradox Details",
+          "tagline": "Metaphysics of Material Change",
+          "summary": "A thought experiment that raises the question of whether an object that has had all of its components replaced remains fundamentally the same object.",
+          "citation": {
+            "source": "Plutarch",
+            "ref": "Theseus, 23.1"
+          }
+        }
+      },
+      {
+        "id": 26,
+        "theme": "cyan",
+        "template": "art_masterpiece",
+        "front": {
+          "title": "The Starry Night",
+          "tagline": "Vincent van Gogh Masterpiece",
+          "category": "ART HISTORY"
+        },
+        "back": {
+          "title": "The Starry Night Analysis",
+          "tagline": "Post-Impressionism Oil Painting",
+          "summary": "An oil-on-canvas painting painted in June 1889, depicting the view from the east-facing window of his asylum room at Saint-Rémy-de-Provence.",
+          "citation": {
+            "source": "Museum of Modern Art",
+            "ref": "Acquired in 1941"
+          }
+        }
+      },
+      {
+        "id": 27,
+        "theme": "purple",
+        "template": "grammar_rule",
+        "front": {
+          "title": "Active vs Passive Voice",
+          "tagline": "Sentence voice syntax construction",
+          "category": "ENGLISH SYNTAX"
+        },
+        "back": {
+          "title": "Active and Passive voice constructs",
+          "tagline": "Subject Action Verb Layout",
+          "summary": "In active voice, the subject performs the action. In passive voice, the subject receives the action.",
+          "table": {
+            "headers": [
+              "Voice",
+              "Sentence Example"
+            ],
+            "rows": [
+              [
+                "Active Voice",
+                "The chef prepared the meal."
+              ],
+              [
+                "Passive Voice",
+                "The meal was prepared by the chef."
+              ]
+            ]
+          }
+        }
+      },
+      {
+        "id": 28,
+        "theme": "orange",
+        "template": "project_management",
+        "front": {
+          "title": "Agile Sprint Backlog",
+          "tagline": "Sprint board priority setup",
+          "category": "AGILE SCRUM"
+        },
+        "back": {
+          "title": "Sprint Tasks and Status Checklist",
+          "tagline": "Sprint backlog board tracking",
+          "summary": "A list of product features selected for development inside the current sprint timeline.",
+          "checklist": {
+            "items": [
+              {
+                "text": "UI Login page integration tests",
+                "checked": true
+              },
+              {
+                "text": "Database migrations for user schemas",
+                "checked": true
+              },
+              {
+                "text": "Email notification system cron job",
+                "checked": false
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 29,
+        "theme": "emerald",
+        "template": "sports_playbook",
+        "front": {
+          "title": "4-3-3 Attacking System",
+          "tagline": "Football Strategy Layout",
+          "category": "TACTICS"
+        },
+        "back": {
+          "title": "4-3-3 Field Positions",
+          "tagline": "High pressing lines coordinates",
+          "summary": "A tactical system utilizing four defenders, three midfielders, and three forwards to achieve dominance in possession.",
+          "key_points": [
+            "Full-backs overlap along flanks.",
+            "Central midfielder anchors defensive line."
+          ]
+        }
+      },
+      {
+        "id": 30,
+        "theme": "gold",
+        "template": "marketing_funnel",
+        "front": {
+          "title": "AARRR Pirate Funnel",
+          "tagline": "Growth Marketing metrics",
+          "category": "MARKETING"
+        },
+        "back": {
+          "title": "AARRR Funnel Stages",
+          "tagline": "Pirate Metrics checklist",
+          "summary": "A metrics framework designed for startup growth tracking across five consumer stages.",
+          "timeline": {
+            "items": [
+              {
+                "label": "1. Acquisition",
+                "detail": "User visits landing page"
+              },
+              {
+                "label": "2. Activation",
+                "detail": "User creates free trial account"
+              },
+              {
+                "label": "3. Retention",
+                "detail": "User returns within 7 days"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 31,
+        "theme": "cyan",
+        "template": "chess_tactic",
+        "front": {
+          "title": "Smothered Mate",
+          "tagline": "Knight mate pattern check",
+          "category": "CHESS STUDY"
+        },
+        "back": {
+          "title": "Smothered Mate Tactical Pattern",
+          "tagline": "Surrounded King checkmate",
+          "summary": "A checkmate delivered by a knight in which the mated king is unable to move because he is surrounded by his own chess pieces.",
+          "key_points": [
+            "Delivered solely by the Knight.",
+            "Requires king to be fully boxed in."
+          ]
+        }
+      },
+      {
+        "id": 32,
+        "theme": "purple",
+        "template": "mythological_deity",
+        "front": {
+          "title": "Odin",
+          "tagline": "The Norse Allfather Deity",
+          "category": "MYTHOLOGY"
+        },
+        "back": {
+          "title": "Odin Allfather Profile",
+          "tagline": "Asgard Ruler Characteristics",
+          "summary": "A widely revered god in Germanic mythology, associated with wisdom, healing, death, royalty, the gallows, knowledge, war, battle, victory, sorcery, poetry, frenzy, and the runic alphabet.",
+          "key_points": [
+            "Weapon: Gungnir spear",
+            "Companions: Huginn & Muninn ravens"
+          ]
+        }
+      },
+      {
+        "id": 33,
+        "theme": "orange",
+        "template": "network_topology",
+        "front": {
+          "title": "Three-Tier App Cluster",
+          "tagline": "High availability cluster architecture",
+          "category": "INFRASTRUCTURE"
+        },
+        "back": {
+          "title": "Three-Tier server nodes layout",
+          "tagline": "Client Load balancer pipeline",
+          "summary": "A client-server architecture in which the functional process logic, data access, computer data storage, and user interface are developed and maintained as independent modules.",
+          "diagram": "[Client Browser] ──> [Nginx Load Balancer]\n                      ├──> [App Node 1] ──> [Postgres Main]\n                      └──> [App Node 2] ──> [Postgres Replica]"
+        }
+      },
+      {
+        "id": 34,
+        "theme": "emerald",
+        "template": "aviation_checklist",
+        "front": {
+          "title": "Engine Fire In-Flight",
+          "tagline": "Emergency Aviation Checklist ops",
+          "category": "EMERGENCY PROTOCOL"
+        },
+        "back": {
+          "title": "Engine Fire Emergency Checklist",
+          "tagline": "In-Flight Engine shutdown checklist",
+          "summary": "Standard operating procedure checklist for engine isolation during fire indicator light alert.",
+          "checklist": {
+            "items": [
+              {
+                "text": "Thrust Lever: Idle (Isolate fuel lines)",
+                "checked": true
+              },
+              {
+                "text": "Engine Start Selector: Off (Kill sparks)",
+                "checked": true
+              },
+              {
+                "text": "Engine Fire Switch: Pull and rotate (Release extinguisher)",
+                "checked": false
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 35,
+        "theme": "gold",
+        "template": "cryptocurrency",
+        "front": {
+          "title": "Ethereum Gas Limits",
+          "tagline": "Smart Contract Gas Units limits",
+          "category": "BLOCKCHAIN"
+        },
+        "back": {
+          "title": "Ethereum transaction gas thresholds",
+          "tagline": "Gas units metric limits",
+          "summary": "The maximum amount of gas that a transaction sender is willing to pay to execute a smart contract block on the EVM.",
+          "key_points": [
+            "Base transaction cost: 21,000 gas units",
+            "Blocks have a target gas limit of 15 million"
+          ]
+        }
+      },
+      {
+        "id": 36,
+        "theme": "cyan",
+        "template": "user_persona",
+        "front": {
+          "title": "Developer Persona",
+          "tagline": "UX Software Engineer Persona",
+          "category": "USER RESEARCH"
+        },
+        "back": {
+          "title": "Developer Persona Profile Details",
+          "tagline": "UX Archetype profile details",
+          "summary": "Name: Sarah, Age: 28, Role: Senior Full-Stack Engineer, Goals: Streamlining IDE pipelines, reducing visual clutter.",
+          "key_points": [
+            "Needs keyboard-driven navigation shortcuts.",
+            "Strong preference for dark mode visual themes."
+          ]
+        }
+      }
+    ]
+  }
+}

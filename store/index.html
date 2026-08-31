@@ -17,9 +17,9 @@
 
   <!-- Top Promotion Ticker -->
   <div class="promo-bar">
-    <span>🔥 Festive Offer: Single Deck at <span style="color: #fef08a;">₹120</span></span>
+    <span>🔥 Revision Sale: Single Deck at <span style="color: #fef08a;">₹200</span></span>
     <span>•</span>
-    <span>Buy <span class="promo-highlight">Any 5 Decks for ₹500</span> (Save ₹100!)</span>
+    <span>Special Offer: Buy 5, <span class="promo-highlight">Get 1 FREE!</span> (Get 6 Decks for ₹1000)</span>
   </div>
 
   <!-- Navbar -->
@@ -49,6 +49,7 @@
       <div class="nav-search-box">
         <svg class="nav-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="nav-search" class="nav-search-input" placeholder="Search decks (e.g. Biology, Polity, Finance, Custom)...">
+        <div class="search-results-dropdown" id="nav-search-dropdown"></div>
       </div>
     </div>
   </nav>
@@ -129,27 +130,87 @@
     </div>
   </section>
 
+  <!-- Video Showcase Section -->
+  <section class="video-section" id="store-videos">
+    <div class="video-container-wrapper">
+      <div class="video-showcase-split">
+        
+        <!-- Left: Showcase Video -->
+        <div class="video-showcase-left">
+          <div class="video-card-v">
+            <div class="video-iframe-wrapper">
+              <iframe 
+                src="https://www.youtube.com/embed/BqAKtKL_emw?rel=0&enablejsapi=1" 
+                title="YaadCard Flashcards Product Showcase" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+              </iframe>
+            </div>
+            <div class="video-info-v">
+              <div class="video-title-v">Premium Revision Decks</div>
+              <div class="video-desc-v">Take a look at the design, card thickness, and tuck-box case layout of YaadCard.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Action Search & Custom creation (Desktop only) -->
+        <div class="video-showcase-right">
+          <div class="action-card-desktop">
+            <h3>Find or Design a Deck</h3>
+            <p>Search our high-yield syllabus collections or enter custom guidelines to print your own revision cards.</p>
+            
+            <div class="action-input-group">
+              <label for="desktop-catalog-search">Search Catalog</label>
+              <div style="position: relative;">
+                <input type="text" id="desktop-catalog-search" placeholder="Search Biology, Polity, Finance, Custom..." oninput="handleDesktopSearch(this.value)">
+                <svg style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <div class="search-results-dropdown" id="desktop-search-dropdown"></div>
+              </div>
+            </div>
+
+            <div class="action-divider"><span>OR</span></div>
+
+            <div class="action-input-group">
+              <label for="desktop-custom-specs">Custom Flashcard Requirements</label>
+              <textarea id="desktop-custom-specs" placeholder="Describe the topics, questions, or syllabus for your custom flashcard deck..."></textarea>
+              <button class="btn-primary-store" onclick="createCustomDeckFromInput()" style="margin-top: 10px; width: 100%;">
+                <span>Request Custom Deck</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products Section -->
+  <section class="featured-section" id="featured-decks-section" style="display: none;">
+    <div class="featured-header">
+      <h2>Featured Decks</h2>
+      <p>Handpicked premium flashcard decks recommended for quick mastery.</p>
+    </div>
+    <div class="product-grid" id="featured-product-grid">
+      <!-- Populated dynamically by store.js -->
+    </div>
+  </section>
+
   <!-- Store Collections Grid -->
   <main class="collection-section" id="store-main-catalog">
     <div class="section-header">
       <h2>Explore YaadCard Collections</h2>
-      <p>Filter by topics, select your decks, and secure your pre-order today.</p>
-    </div>
-
-    <!-- Category Tabs -->
-    <div class="filter-tabs">
-      <button class="filter-tab active" data-category="all">All Collections</button>
-      <button class="filter-tab" data-category="Academics">Academics</button>
-      <button class="filter-tab" data-category="Exams">Exams</button>
-      <button class="filter-tab" data-category="Games">Games</button>
-      <button class="filter-tab" data-category="Journey">Journey</button>
-      <button class="filter-tab" data-category="SelfHelp Books">SelfHelp Books</button>
-      <button class="filter-tab" data-category="Other">Other & Custom</button>
+      <p>Browse our catalog, select your decks, and secure your pre-order today.</p>
     </div>
 
     <!-- Product Grid -->
     <div class="product-grid" id="store-product-grid">
       <!-- Injected Dynamically by store.js -->
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-container" id="pagination-controls">
+      <!-- Populated dynamically by store.js -->
     </div>
   </main>
 
@@ -182,7 +243,7 @@
         <div class="cart-footer">
           <!-- Bundle Offer Banner Recommendation -->
           <div class="cart-bundle-tip" id="cart-bundle-tip">
-            Add 4 more decks to get the 5-deck pack for ₹500!
+            Add 5 more decks to get 1 FREE deck (Buy 5 Get 1 Free!)
           </div>
 
           <div class="cart-summary-box">
@@ -197,6 +258,9 @@
             <div class="cart-summary-row total">
               <span>Estimated Total:</span>
               <span id="cart-total">₹0</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); text-align: right; margin-top: -6px; margin-bottom: 8px;">
+              * Delivery charges are not included and will be added later.
             </div>
           </div>
 
@@ -254,10 +318,13 @@
               <span>Total Bill (Est + Ship):</span>
               <span id="checkout-total-price" style="color: #34d399;">₹0</span>
             </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); text-align: right; margin-top: 2px;">
+              * Delivery charges are not included and will be added later.
+            </div>
           </div>
 
           <p style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.35; margin-top: 4px;">
-            ℹ️ <strong>Cashless Registration</strong>: We do not charge payment now. Our logistics team will call or WhatsApp you within 24 hours to verify the shipping address and share secure payment links.
+            ℹ️ <strong>Pre-order Payment Info</strong>: We do not charge payment now. Order confirmation details, final delivery charges, and the total bill for payment will be sent directly to your WhatsApp number within 24 hours.
           </p>
 
           <button type="submit" class="btn-primary-store" style="width: 100%; padding: 14px; font-size: 0.95rem; background: linear-gradient(135deg, #ff3b30, #ff9500); color: white;">
@@ -277,7 +344,7 @@
         <div style="background: rgba(0,0,0,0.15); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; font-size: 0.8rem; text-align: left; color: #cbd5e1; margin-bottom: 24px;">
           <strong>What's Next?</strong>
           <p style="margin-top: 6px; font-size: 0.75rem; line-height: 1.4; color: var(--text-muted);">
-            Our team will connect with you via phone call or WhatsApp at <strong id="success-client-phone" style="color: #38bdf8;">9988998899</strong> within 24 hours to confirm your shipping details and send payment links.
+            Order confirmation details, final delivery charges, and the total bill for payment will be sent directly to your WhatsApp at <strong id="success-client-phone" style="color: #38bdf8;">9988998899</strong> within 24 hours.
           </p>
         </div>
 
@@ -295,12 +362,13 @@
       <p>&copy; 2026 YaadCard Store. All rights reserved.</p>
       <ul class="footer-links">
         <li><a href="#" onclick="event.preventDefault(); openCustomRequest()">Request Custom Deck</a></li>
-        <li><a href="admin.html" class="footer-admin">📊 Admin Console</a></li>
       </ul>
     </div>
   </footer>
 
   <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
   <script src="store.js"></script>
 </body>
 </html>

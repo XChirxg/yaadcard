@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>yaad card</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fira+Code:wght@400;500&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX LaTeX Formula Support -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- DESKTOP WORKSPACE OVERLAY -->
+  <div class="app-interface">
+    
+    <!-- TOP OS MENU BAR -->
+    <nav class="desktop-menu-bar">
+      <div class="menu-brand">
+        <div class="brand-stripes">
+          <span style="background-color: #06b6d4;"></span>
+          <span style="background-color: #f97316;"></span>
+          <span style="background-color: #a855f7;"></span>
+          <span style="background-color: #10b981;"></span>
+          <span style="background-color: #eab308;"></span>
+        </div>
+        <span class="brand-text">yaad card</span>
+      </div>
+      
+      <!-- MENU DROPDOWNS -->
+      <div class="menu-dropdowns">
+        <div class="menu-item">
+          <button class="menu-trigger">File</button>
+          <div class="menu-dropdown">
+            <button id="menu-new-deck">New Blank Deck</button>
+            <button id="menu-import-ai">Prompt & Importer Manager...</button>
+            <button id="menu-save-deck">Save Deck JSON</button>
+          </div>
+        </div>
+        
+        <div class="menu-item">
+          <button class="menu-trigger">Window</button>
+          <div class="menu-dropdown">
+            <button class="win-toggle checked" data-win="win-cards">Cards Navigator</button>
+            <button class="win-toggle checked" data-win="win-card-editor">Card Editor</button>
+            <button class="win-toggle checked" data-win="win-anki">Anki Digital Preview</button>
+            <div class="dropdown-divider"></div>
+            <button class="win-toggle text-accent" data-win="win-packaging-editor">Packaging Editor</button>
+            <button class="win-toggle text-accent" data-win="win-packaging-preview">Packaging Live Preview</button>
+            <button class="win-toggle" data-win="win-packaging-planner">Packaging Planner</button>
+            <button class="win-toggle" data-win="win-style-inspector">Style & Layout Inspector</button>
+            <button class="win-toggle" data-win="win-prompt-manager">Prompt & AI Importer</button>
+            <button class="win-toggle" data-win="win-template-designer">HTML/CSS Template Designer</button>
+            <button class="win-toggle" data-win="win-print-preview">Print Sheets Preview</button>
+            <button class="win-toggle" data-win="win-shortcuts">Help & Shortcuts</button>
+            <div class="dropdown-divider"></div>
+            <button id="menu-reset-workspace">Reset Window Layout</button>
+          </div>
+        </div>
+        
+        <div class="menu-item">
+          <button class="menu-trigger">Help</button>
+          <div class="menu-dropdown">
+            <button id="menu-help-shortcuts">Keyboard Shortcuts</button>
+            <button id="menu-help-about">About yaad card</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVE DECK BANNER -->
+      <div class="menu-deck-summary">
+        <label>Deck:</label> <span id="active-deck-name">Showcase Deck</span>
+      </div>
+
+      <!-- TOP ACTIONS BAR -->
+      <div class="menu-global-actions">
+        <div class="menu-toggle-item">
+          <label>Back side (Duplex)</label>
+          <input type="checkbox" id="duplex-toggle" checked>
+        </div>
+        <div class="menu-toggle-item">
+          <label>Index Card</label>
+          <input type="checkbox" id="index-card-toggle" checked>
+        </div>
+        <button class="menu-btn print-accent" id="btn-print-cards">Print Cards</button>
+        <button class="menu-btn print-accent" id="btn-print-pack">Print Packaging</button>
+      </div>
+    </nav>
+    
+    <!-- DESKTOP WORKSPACE -->
+    <div class="desktop-workspace" id="desktop-area">
+      
+      <!-- WINDOW 1: CARDS NAVIGATOR -->
+      <div class="app-window" id="win-cards" style="left: 10px; top: 15px; width: 280px; height: 500px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+            Cards Navigator
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body">
+          <div class="sidebar-search">
+            <input type="text" id="card-search-input" placeholder="Search title or content...">
+          </div>
+          
+          <div class="cards-list-container" id="cards-list"></div>
+          
+          <div class="sidebar-footer" style="flex-direction:column; gap:6px;">
+            <div style="display:flex; gap:6px; width:100%;">
+              <button class="btn btn-add" id="add-card-btn" style="flex:1;">+ Add Blank</button>
+              <button class="btn btn-add btn-secondary" id="add-custom-card-btn" style="flex:1;">+ Custom</button>
+            </div>
+            <button class="btn btn-add btn-secondary" id="add-json-card-btn" style="width:100%;">+ Paste Single Card JSON</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 2: CARD EDITOR -->
+      <div class="app-window" id="win-card-editor" style="left: 300px; top: 15px; width: 500px; height: 550px;">
+        <div class="win-header">
+          <div class="win-title" id="card-editor-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
+            Card Editor
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-delete text-danger" id="btn-delete-card-top" title="Delete Card" style="font-weight:bold; margin-right:8px;">Delete Card</button>
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body">
+          <div id="card-editor-content-area" style="padding: 15px; overflow-y: auto; height: 100%;">
+            
+            <!-- Empty state -->
+            <div id="editor-empty-state" class="empty-state" style="display: none;">
+              <p>No card active. Create or select a card to configure.</p>
+            </div>
+
+            <!-- Main Editor Fields -->
+            <div id="main-editor-fields">
+              <div class="form-row">
+                <div class="form-group flex-2">
+                  <label>Card Template</label>
+                  <select id="card-template-select">
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+                <div class="form-group flex-1">
+                  <label>Corner Radius</label>
+                  <select id="card-corner-select">
+                    <option value="0px">Sharp (0px)</option>
+                    <option value="6px">Slight (6px)</option>
+                    <option value="12px" selected>Curved (12px)</option>
+                    <option value="20px">Rounded (20px)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row" style="margin-top: 5px;">
+                <div class="form-group">
+                  <label>Card Theme</label>
+                  <div class="theme-picker-row">
+                    <button class="theme-dot active" data-theme="cyan" style="background-color: #06b6d4;"></button>
+                    <button class="theme-dot" data-theme="orange" style="background-color: #f97316;"></button>
+                    <button class="theme-dot" data-theme="purple" style="background-color: #a855f7;"></button>
+                    <button class="theme-dot" data-theme="emerald" style="background-color: #10b981;"></button>
+                    <button class="theme-dot" data-theme="gold" style="background-color: #eab308;"></button>
+                    <input type="color" id="custom-theme-color" title="Theme color picker">
+                  </div>
+                </div>
+              </div>
+
+              <hr class="editor-divider" />
+
+              <!-- FRONT SIDE -->
+              <div class="editor-section-header">
+                <h4>Front Face Details</h4>
+              </div>
+              <div class="form-group">
+                <label>Front Title (Core Term)</label>
+                <input type="text" id="front-title-input" placeholder="WACC / कर्मण्येवाधिकारस्ते">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Front Tagline (Optional)</label>
+                  <input type="text" id="front-tagline-input" placeholder="e.g. LEGENDARY">
+                </div>
+                <div class="form-group">
+                  <label>Front Category</label>
+                  <input type="text" id="front-category-input" placeholder="e.g. DRAGON">
+                </div>
+              </div>
+
+              <!-- FRONT IMAGE AREA -->
+              <div class="form-group margin-top">
+                <label>Front Cover Image / Illustration</label>
+              </div>
+              <div class="image-editor-container">
+                <div class="upload-controls">
+                  <div class="upload-btn-wrapper">
+                    <button class="btn btn-secondary btn-xs">Choose File</button>
+                    <input type="file" id="front-image-upload" accept="image/*">
+                  </div>
+                  <button class="btn-text text-danger" id="remove-front-image-btn" style="display: none;">Remove Image</button>
+                </div>
+                
+                <div class="form-group" style="margin-top: 8px;">
+                  <label style="font-size:0.6rem;">Or paste Web URL</label>
+                  <input type="text" id="front-image-url" placeholder="http://example.com/image.png">
+                </div>
+
+                <div style="margin-top: 8px;">
+                  <label style="display:flex; align-items:center; gap:6px; font-weight:600; color:#ffffff; font-size:0.75rem;">
+                    <input type="checkbox" id="front-bleed-toggle">
+                    Front Full-Bleed Mode (Hide front texts)
+                  </label>
+                </div>
+
+                <div id="front-image-adjustment-controls" style="display:none; margin-top: 12px; border-top:1px solid var(--border-color); padding-top:10px;">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Image Type</label>
+                      <select id="front-image-style-select">
+                        <option value="content">Content block</option>
+                        <option value="icon-top">Small Icon</option>
+                        <option value="background">Background Image</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Fitting</label>
+                      <select id="front-image-fit-select">
+                        <option value="cover">Crop & Fill (Cover)</option>
+                        <option value="contain">Show Whole (Contain)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Content Block specific controls -->
+                  <div class="content-block-only-controls" style="margin-top:5px; display:flex; flex-direction:column; gap:5px;">
+                    <div class="slider-group">
+                      <div class="slider-lbl"><span>Block Width</span><span id="front-width-val">100%</span></div>
+                      <input type="range" id="front-image-width-slider" min="10" max="100" value="100">
+                    </div>
+                    <div class="slider-group">
+                      <div class="slider-lbl"><span>Block Height</span><span id="front-height-val">55px</span></div>
+                      <input type="range" id="front-image-height-slider" min="20" max="200" value="55">
+                    </div>
+                    <div class="slider-group">
+                      <div class="slider-lbl"><span>Vertical Margin</span><span id="front-margin-val">0px</span></div>
+                      <input type="range" id="front-image-margin-slider" min="-50" max="50" value="0">
+                    </div>
+                    <div style="margin: 5px 0;">
+                      <label style="display:flex; align-items:center; gap:6px; font-size:0.7rem;"><input type="checkbox" id="front-image-outline-toggle" checked> Keep Outline Border</label>
+                    </div>
+                  </div>
+
+                  <div class="slider-group">
+                    <div class="slider-lbl"><span>Zoom Size</span><span id="front-zoom-val">100%</span></div>
+                    <input type="range" id="front-image-zoom-slider" min="10" max="300" value="100">
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <div class="slider-lbl"><span>Horizontal (X)</span><span id="front-posx-val">50%</span></div>
+                      <input type="range" id="front-image-posx-slider" min="0" max="100" value="50">
+                    </div>
+                    <div class="form-group">
+                      <div class="slider-lbl"><span>Vertical (Y)</span><span id="front-posy-val">50%</span></div>
+                      <input type="range" id="front-image-posy-slider" min="0" max="100" value="50">
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Rotation</label>
+                      <select id="front-image-rotation-select">
+                        <option value="0">0°</option>
+                        <option value="90">90°</option>
+                        <option value="180">180°</option>
+                        <option value="270">270°</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>BG color</label>
+                      <input type="color" id="front-image-bg-color-picker" value="#ffffff" style="height:25px; padding:0; cursor:pointer;">
+                    </div>
+                  </div>
+
+                  <div class="slider-group">
+                    <div class="slider-lbl"><span>Grayscale</span><span id="front-grayscale-val">0%</span></div>
+                    <input type="range" id="front-image-grayscale-slider" min="0" max="100" value="0">
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <div class="slider-lbl"><span>Brightness</span><span id="front-brightness-val">100%</span></div>
+                      <input type="range" id="front-image-brightness-slider" min="50" max="150" value="100">
+                    </div>
+                    <div class="form-group">
+                      <div class="slider-lbl"><span>Contrast</span><span id="front-contrast-val">100%</span></div>
+                      <input type="range" id="front-image-contrast-slider" min="50" max="150" value="100">
+                    </div>
+                  </div>
+
+                  <div class="slider-group" id="front-bg-opacity-group" style="display:none;">
+                    <div class="slider-lbl"><span>Background Opacity</span><span id="front-opacity-val">0.15</span></div>
+                    <input type="range" id="front-image-opacity-slider" min="5" max="100" value="15">
+                  </div>
+                </div>
+              </div>
+
+              <hr class="editor-divider" />
+
+              <!-- BACK SIDE -->
+              <div class="editor-section-header">
+                <h4>Back Face Details</h4>
+              </div>
+              <div class="form-row">
+                <div class="form-group flex-3">
+                  <label>Back Title</label>
+                  <input type="text" id="back-title-input" placeholder="Weighted Avg Cost of Capital">
+                </div>
+                <div class="form-group flex-1" id="game-hp-group" style="display:none;">
+                  <label>HP Value</label>
+                  <input type="text" id="back-hp-input" placeholder="HP 450">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Back Tagline</label>
+                <input type="text" id="back-tagline-input" placeholder="Discount Rate for Capital Projects">
+              </div>
+              <div class="form-group">
+                <label>Summary / Definition / Verse Text</label>
+                <textarea id="back-summary-input" placeholder="Describe the core formula, mnemonic, translation, or stoic quote summary here..."></textarea>
+              </div>
+
+              <!-- ADVANCED DYNAMIC FEATURES (EXPAANDED TO 20) -->
+              <div class="editor-section-header margin-top" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                <h4 style="margin:0;">Dynamic Features Manager</h4>
+                <button class="btn btn-secondary btn-xs" id="clear-all-elements-btn" style="background:#dc2626; color:#ffffff; font-size:0.58rem; border:none; padding:1px 6px; border-radius:3px;">Clear All</button>
+              </div>
+              <div style="display:flex; gap:6px; margin-bottom:10px; align-items:center; width:100%;">
+                <select id="advanced-element-select" style="flex:1; height:28px;">
+                  <option value="none">-- Select Feature --</option>
+                  <option value="key_points">1. Key Points / Bullets</option>
+                  <option value="table">2. Data Table</option>
+                  <option value="timeline">3. Timeline Nodes</option>
+                  <option value="chart">4. Simple SVG Bar Chart</option>
+                  <option value="diagram">5. ASCII Flow Diagram</option>
+                  <option value="qr_code">6. Link QR Code SVG</option>
+                  <option value="social_badge">7. Social Media Handles</option>
+                  <option value="rating">8. Rating / Difficulty Stars</option>
+                  <option value="progress_bar">9. Status Progress Bar</option>
+                  <option value="console_output">10. Simulated Terminal Console</option>
+                  <option value="checklist">11. Task Checklist</option>
+                  <option value="game_stats">12. RPG Stats Bars</option>
+                  <option value="numbered_steps">13. Sequential Numbered Steps</option>
+                  <option value="audio_bar">14. Simulated Playback Audio Bar</option>
+                  <option value="callout">15. Warning Alert Box</option>
+                  <option value="tags_row">16. Styled Tag Chips Row</option>
+                  <option value="term_lookup">17. Pronunciation Dictionary tags</option>
+                  <option value="citation">18. Citation quotes footnote</option>
+                  <option value="variable_legend">19. Variables formula legend</option>
+                  <option value="location_pin">20. Pin Location Coordinates</option>
+                </select>
+                <button class="btn btn-secondary btn-xs" id="add-element-type-btn" style="background:#16a34a; color:#ffffff; border:none; padding:0 12px; height:28px; font-weight:600; border-radius:4px; font-size:0.68rem; cursor:pointer;">Add</button>
+                <button class="btn btn-secondary btn-xs" id="remove-element-type-btn" style="background:#b91c1c; color:#ffffff; border:none; padding:0 12px; height:28px; font-weight:600; border-radius:4px; font-size:0.68rem; cursor:pointer;">Delete</button>
+              </div>
+              <div id="active-elements-badges" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:10px;"></div>
+
+              <!-- BULLETS (1) -->
+              <div class="element-editor-pane" id="el-key_points-editor" style="display:none;">
+                <div class="list-editor-items" id="key-points-items"></div>
+                <button class="btn btn-secondary btn-xs" id="add-key-point-btn">+ Add Point</button>
+              </div>
+
+              <!-- TABLE (2) -->
+              <div class="element-editor-pane" id="el-table-editor" style="display:none;">
+                <div class="table-editor-headers">
+                  <input type="text" id="th-1" placeholder="Header 1">
+                  <input type="text" id="th-2" placeholder="Header 2">
+                </div>
+                <div class="table-editor-rows" id="table-rows-container"></div>
+                <button class="btn btn-secondary btn-xs" id="add-table-row-btn">+ Add Row</button>
+              </div>
+
+              <!-- TIMELINE (3) -->
+              <div class="element-editor-pane" id="el-timeline-editor" style="display:none;">
+                <div class="timeline-editor-items" id="timeline-nodes-container"></div>
+                <button class="btn btn-secondary btn-xs" id="add-timeline-node-btn">+ Add Timeline Node</button>
+              </div>
+
+              <!-- CHART (4) -->
+              <div class="element-editor-pane" id="el-chart-editor" style="display:none;">
+                <div class="chart-editor-bars" id="chart-bars-container"></div>
+                <button class="btn btn-secondary btn-xs" id="add-chart-bar-btn">+ Add Bar</button>
+              </div>
+
+              <!-- DIAGRAM (5) -->
+              <div class="element-editor-pane" id="el-diagram-editor" style="display:none;">
+                <textarea id="ascii-diagram-input" class="code-font" placeholder="[Source] ──> [Target]"></textarea>
+              </div>
+
+              <!-- QR CODE (6) -->
+              <div class="element-editor-pane" id="el-qr_code-editor" style="display:none;">
+                <div class="form-group">
+                  <label>QR Link URL / Text</label>
+                  <input type="text" id="qr-link-input" placeholder="https://yaadcard.web.app">
+                </div>
+                <div class="form-group">
+                  <label>QR Caption Label</label>
+                  <input type="text" id="qr-label-input" placeholder="Scan to verify">
+                </div>
+              </div>
+
+              <!-- SOCIAL BADGES (7) -->
+              <div class="element-editor-pane" id="el-social_badge-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Platform Icon</label>
+                    <select id="social-platform-select">
+                      <option value="x">X / Twitter</option>
+                      <option value="github">GitHub</option>
+                      <option value="linkedin">LinkedIn</option>
+                      <option value="youtube">YouTube</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Profile Handle</label>
+                    <input type="text" id="social-handle-input" placeholder="@username">
+                  </div>
+                </div>
+              </div>
+
+              <!-- RATING STARS (8) -->
+              <div class="element-editor-pane" id="el-rating-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Rating Label</label>
+                    <input type="text" id="rating-label-input" placeholder="Difficulty">
+                  </div>
+                  <div class="form-group">
+                    <label>Stars Count (1 to 5)</label>
+                    <input type="number" id="rating-stars-input" min="1" max="5" value="4">
+                  </div>
+                </div>
+              </div>
+
+              <!-- PROGRESS BAR (9) -->
+              <div class="element-editor-pane" id="el-progress_bar-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group flex-2">
+                    <label>Progress Label</label>
+                    <input type="text" id="progress-label-input" placeholder="Completion">
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>Percentage (%)</label>
+                    <input type="number" id="progress-percent-input" min="0" max="100" value="75">
+                  </div>
+                </div>
+              </div>
+
+              <!-- CONSOLE OUTPUT (10) -->
+              <div class="element-editor-pane" id="el-console_output-editor" style="display:none;">
+                <div class="form-group">
+                  <label>Command prompt</label>
+                  <input type="text" id="console-cmd-input" placeholder="python main.py">
+                </div>
+                <div class="form-group">
+                  <label>Console stdout text</label>
+                  <textarea id="console-out-input" class="code-font" placeholder="Hello World! Process exited with code 0."></textarea>
+                </div>
+              </div>
+
+              <!-- CHECKLIST (11) -->
+              <div class="element-editor-pane" id="el-checklist-editor" style="display:none;">
+                <div id="checklist-items-container" style="display:flex; flex-direction:column; gap:4px;"></div>
+                <button class="btn btn-secondary btn-xs" id="add-checklist-item-btn">+ Add Checklist Item</button>
+              </div>
+
+              <!-- GAME STATS (12) -->
+              <div class="element-editor-pane" id="el-game_stats-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>ATK (0-100)</label>
+                    <input type="number" id="stat-atk" min="0" max="100" value="75">
+                  </div>
+                  <div class="form-group">
+                    <label>DEF (0-100)</label>
+                    <input type="number" id="stat-def" min="0" max="100" value="50">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>SPD (0-100)</label>
+                    <input type="number" id="stat-spd" min="0" max="100" value="65">
+                  </div>
+                  <div class="form-group">
+                    <label>MANA (0-100)</label>
+                    <input type="number" id="stat-mana" min="0" max="100" value="90">
+                  </div>
+                </div>
+              </div>
+
+              <!-- NUMBERED STEPS (13) -->
+              <div class="element-editor-pane" id="el-numbered_steps-editor" style="display:none;">
+                <div id="numbered-steps-container" style="display:flex; flex-direction:column; gap:4px;"></div>
+                <button class="btn btn-secondary btn-xs" id="add-step-btn">+ Add Step</button>
+              </div>
+
+              <!-- AUDIO PLAYBACK (14) -->
+              <div class="element-editor-pane" id="el-audio_bar-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Speaker Text label</label>
+                    <input type="text" id="audio-label-input" placeholder="Pronunciation">
+                  </div>
+                  <div class="form-group">
+                    <label>Duration string</label>
+                    <input type="text" id="audio-time-input" placeholder="0:45">
+                  </div>
+                </div>
+              </div>
+
+              <!-- CALLOUT BOX (15) -->
+              <div class="element-editor-pane" id="el-callout-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Type / Color tone</label>
+                    <select id="callout-type-select">
+                      <option value="warning">Warning (Orange)</option>
+                      <option value="info">Info (Blue)</option>
+                      <option value="success">Success (Green)</option>
+                    </select>
+                  </div>
+                  <div class="form-group flex-2">
+                    <label>Callout message text</label>
+                    <input type="text" id="callout-text-input" placeholder="Warning: Keep out of children's reach.">
+                  </div>
+                </div>
+              </div>
+
+              <!-- CHIP TAGS (16) -->
+              <div class="element-editor-pane" id="el-tags_row-editor" style="display:none;">
+                <div id="tag-items-container" style="display:flex; flex-direction:column; gap:4px;"></div>
+                <button class="btn btn-secondary btn-xs" id="add-tag-btn">+ Add Chip Tag</button>
+              </div>
+
+              <!-- TERM DICTIONARY LOOKUP (17) -->
+              <div class="element-editor-pane" id="el-term_lookup-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Phonetic Spelling</label>
+                    <input type="text" id="lookup-phonetic" placeholder="/wæk/">
+                  </div>
+                  <div class="form-group">
+                    <label>Word Class / Part of speech</label>
+                    <input type="text" id="lookup-class" placeholder="noun">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Origin details</label>
+                  <input type="text" id="lookup-origin" placeholder="English, 20th century">
+                </div>
+              </div>
+
+              <!-- CITATION FOOTNOTE (18) -->
+              <div class="element-editor-pane" id="el-citation-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Author / Source</label>
+                    <input type="text" id="citation-source" placeholder="Marcus Aurelius">
+                  </div>
+                  <div class="form-group">
+                    <label>Book / Page location</label>
+                    <input type="text" id="citation-ref" placeholder="Meditations, Book IV">
+                  </div>
+                </div>
+              </div>
+
+              <!-- VARIABLE LEGEND (19) -->
+              <div class="element-editor-pane" id="el-variable_legend-editor" style="display:none;">
+                <div id="legend-items-container" style="display:flex; flex-direction:column; gap:4px;"></div>
+                <button class="btn btn-secondary btn-xs" id="add-legend-btn">+ Add Variable Row</button>
+              </div>
+
+              <!-- LOCATION PIN (20) -->
+              <div class="element-editor-pane" id="el-location_pin-editor" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group flex-2">
+                    <label>Location Name</label>
+                    <input type="text" id="loc-name-input" placeholder="Rome, Italy">
+                  </div>
+                  <div class="form-group flex-1">
+                    <label>Coords (Lat/Long)</label>
+                    <input type="text" id="loc-coords-input" placeholder="41.90, 12.49">
+                  </div>
+                </div>
+              </div>
+
+              <hr class="editor-divider" />
+
+              <!-- BACK SIDE IMAGE LOADER -->
+              <div class="editor-section-header">
+                <h4>Back Cover Image / Icon / Background</h4>
+              </div>
+              <div class="image-editor-container">
+                <div class="upload-controls">
+                  <div class="upload-btn-wrapper">
+                    <button class="btn btn-secondary btn-xs">Choose File</button>
+                    <input type="file" id="card-image-upload" accept="image/*">
+                  </div>
+                  <button class="btn-text text-danger" id="remove-card-image-btn" style="display: none;">Remove Image</button>
+                </div>
+
+                <div class="form-group" style="margin-top: 8px;">
+                  <label style="font-size:0.6rem;">Or paste Web URL</label>
+                  <input type="text" id="card-image-url" placeholder="http://example.com/image.png">
+                </div>
+
+                <div style="margin-top: 8px;">
+                  <label style="display:flex; align-items:center; gap:6px; font-weight:600; color:#ffffff; font-size:0.75rem;">
+                    <input type="checkbox" id="card-bleed-toggle">
+                    Back Full-Bleed Mode (Hide back texts)
+                  </label>
+                </div>
+
+                <div id="image-adjustment-controls" style="display:none; margin-top: 12px; border-top:1px solid var(--border-color); padding-top:10px;">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Image Type</label>
+                      <select id="image-style-select">
+                        <option value="content">Content block</option>
+                        <option value="icon-top">Small Icon</option>
+                        <option value="background">Background Image</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Fitting</label>
+                      <select id="image-fit-select">
+                        <option value="cover">Crop & Fill (Cover)</option>
+                        <option value="contain">Show Whole (Contain)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Content Block specific controls -->
+                  <div class="back-content-block-only-controls" style="margin-top:5px; display:flex; flex-direction:column; gap:5px;">
+                    <div class="slider-group">
+                      <div class="slider-lbl"><span>Block Width</span><span id="back-width-val">100%</span></div>
+                      <input type="range" id="back-image-width-slider" min="10" max="100" value="100">
+                    </div>
+                    <div class="slider-group">
+                      <div class="slider-lbl"><span>Block Height</span><span id="back-height-val">55px</span></div>
+                      <input type="range" id="back-image-height-slider" min="20" max="200" value="55">
+                    </div>
+                    <div class="slider-group">
+                      <div class="slider-lbl"><span>Vertical Margin</span><span id="back-margin-val">0px</span></div>
+                      <input type="range" id="back-image-margin-slider" min="-50" max="50" value="0">
+                    </div>
+                    <div style="margin: 5px 0;">
+                      <label style="display:flex; align-items:center; gap:6px; font-size:0.7rem;"><input type="checkbox" id="back-image-outline-toggle" checked> Keep Outline Border</label>
+                    </div>
+                  </div>
+
+                  <div class="slider-group">
+                    <div class="slider-lbl"><span>Zoom Size</span><span id="zoom-val">100%</span></div>
+                    <input type="range" id="image-zoom-slider" min="10" max="300" value="100">
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <div class="slider-lbl"><span>Horizontal (X)</span><span id="posx-val">50%</span></div>
+                      <input type="range" id="image-posx-slider" min="0" max="100" value="50">
+                    </div>
+                    <div class="form-group">
+                      <div class="slider-lbl"><span>Vertical (Y)</span><span id="posy-val">50%</span></div>
+                      <input type="range" id="image-posy-slider" min="0" max="100" value="50">
+                    </div>
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Rotation</label>
+                      <select id="image-rotation-select">
+                        <option value="0">0°</option>
+                        <option value="90">90°</option>
+                        <option value="180">180°</option>
+                        <option value="270">270°</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>BG color</label>
+                      <input type="color" id="image-bg-color-picker" value="#ffffff" style="height:25px; padding:0; cursor:pointer;">
+                    </div>
+                  </div>
+
+                  <div class="slider-group">
+                    <div class="slider-lbl"><span>Grayscale</span><span id="grayscale-val">0%</span></div>
+                    <input type="range" id="image-grayscale-slider" min="0" max="100" value="0">
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <div class="slider-lbl"><span>Brightness</span><span id="brightness-val">100%</span></div>
+                      <input type="range" id="image-brightness-slider" min="50" max="150" value="100">
+                    </div>
+                    <div class="form-group">
+                      <div class="slider-lbl"><span>Contrast</span><span id="contrast-val">100%</span></div>
+                      <input type="range" id="image-contrast-slider" min="50" max="150" value="100">
+                    </div>
+                  </div>
+
+                  <div class="slider-group" id="bg-opacity-group" style="display:none;">
+                    <div class="slider-lbl"><span>Background Opacity</span><span id="opacity-val">0.15</span></div>
+                    <input type="range" id="image-opacity-slider" min="5" max="100" value="15">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 3: ANKI DIGITAL PREVIEW -->
+      <div class="app-window" id="win-anki" style="left: 815px; top: 15px; width: 350px; height: 500px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+            Anki Digital Preview
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body no-scroll" style="background-color: #05070b;">
+          <div class="digital-preview-wrapper" style="padding: 10px;">
+            <div class="anki-card-container" style="width: 2.4in; height: 3.36in;">
+              <div class="anki-card" id="digital-anki-card">
+                <div class="card-face face-front"></div>
+                <div class="card-face face-back"></div>
+              </div>
+            </div>
+            
+            <div class="anki-controls" style="margin-top: 15px;">
+              <button class="btn btn-secondary btn-xs" id="anki-prev-btn">◀ Prev</button>
+              <button class="btn btn-primary btn-xs" id="anki-flip-btn" style="min-width: 100px;">Flip</button>
+              <button class="btn btn-secondary btn-xs" id="anki-next-btn">Next ▶</button>
+            </div>
+
+            <div class="shortcuts-hint" style="margin-top: 8px;">
+              <kbd>Space</kbd> Flip &bull; <kbd>&larr;</kbd> Prev &bull; <kbd>&rarr;</kbd> Next
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 4: PACKAGING TEXT EDITOR (Hidden) -->
+      <div class="app-window hidden" id="win-packaging-editor" style="left: 300px; top: 100px; width: 420px; height: 550px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11 17a1 1 0 001.447.894l5-2.5A1 1 0 0018 14.5V8.382a1 1 0 00-.553-.894l-5-2.5A1 1 0 0011 5.882V17zM9 17V5.882a1 1 0 00-1.447-.894l-5 2.5A1 1 0 002 8.382v6.118a1 1 0 00.553.894l5 2.5A1 1 0 009 17zM10 1.736l5.447 2.724-5.447 2.724L4.553 4.46 10 1.736z"/></svg>
+            Packaging Editor
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body">
+          <div class="editor-scrollable">
+            <div class="form-group">
+              <label>Brand Name</label>
+              <input type="text" id="pack-brand-input" value="yaad card">
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group flex-2">
+                <label>Subject title</label>
+                <input type="text" id="pack-subject-input" placeholder="STOIC DECK">
+              </div>
+              <div class="form-group flex-1">
+                <label>Price (MRP)</label>
+                <input type="text" id="pack-mrp-input" placeholder="250">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Subtitle / Tagline</label>
+              <input type="text" id="pack-subtitle-input" placeholder="DAILY STOIC REMINDERS">
+            </div>
+
+            <div class="form-group">
+              <label>Description Summary (Back Cover Text)</label>
+              <textarea id="pack-desc-input" placeholder="Summary of the cards in this box..."></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Website text</label>
+                <input type="text" id="pack-website-input" value="yaadcard.web.app">
+              </div>
+              <div class="form-group">
+                <label>Footnote details</label>
+                <input type="text" id="pack-footnote-input" value="Premium cards. Made in India.">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Customize Logo accent stripes</label>
+              <div class="stripe-color-editor">
+                <input type="color" id="stripe-c1" value="#06b6d4">
+                <input type="color" id="stripe-c2" value="#f97316">
+                <input type="color" id="stripe-c3" value="#a855f7">
+                <input type="color" id="stripe-c4" value="#10b981">
+                <input type="color" id="stripe-c5" value="#eab308">
+              </div>
+            </div>
+
+            <hr class="editor-divider" />
+
+            <!-- 6 SIDES ARTWORK UPLOADS -->
+            <div class="editor-section-header">
+              <h4>6-Sided Packaging Net Graphics (Full-Bleed Direct Images)</h4>
+            </div>
+            
+            <!-- Front Flap Artwork -->
+            <div class="form-group image-editor-container" style="margin-bottom:8px;">
+              <label style="color:#ffffff;">1. Front Panel Artwork</label>
+              <div class="upload-controls">
+                <div class="upload-btn-wrapper"><button class="btn btn-secondary btn-xs">Choose Front</button><input type="file" id="pack-cover-upload" accept="image/*"></div>
+              </div>
+              <input type="text" id="pack-cover-url-front" placeholder="Or paste Front Web URL" style="margin-top:4px;">
+              <div style="margin-top: 4px;">
+                <label style="display:flex; align-items:center; gap:6px; font-size:0.7rem;"><input type="checkbox" id="pack-bleed-toggle"> Front Full-Bleed (Hide text/stripes)</label>
+              </div>
+            </div>
+
+            <!-- Back Flap Artwork -->
+            <div class="form-group image-editor-container" style="margin-bottom:8px;">
+              <label style="color:#ffffff;">2. Back Panel Artwork</label>
+              <div class="upload-controls">
+                <div class="upload-btn-wrapper"><button class="btn btn-secondary btn-xs">Choose Back</button><input type="file" id="pack-cover-upload-back" accept="image/*"></div>
+              </div>
+              <input type="text" id="pack-cover-url-back" placeholder="Or paste Back Web URL" style="margin-top:4px;">
+            </div>
+
+            <!-- Left Flap Artwork -->
+            <div class="form-group image-editor-container" style="margin-bottom:8px;">
+              <label style="color:#ffffff;">3. Left Side Panel Artwork</label>
+              <div class="upload-controls">
+                <div class="upload-btn-wrapper"><button class="btn btn-secondary btn-xs">Choose Left</button><input type="file" id="pack-cover-upload-left" accept="image/*"></div>
+              </div>
+              <input type="text" id="pack-cover-url-left" placeholder="Or paste Left Web URL" style="margin-top:4px;">
+            </div>
+
+            <!-- Right Flap Artwork -->
+            <div class="form-group image-editor-container" style="margin-bottom:8px;">
+              <label style="color:#ffffff;">4. Right Side Panel Artwork</label>
+              <div class="upload-controls">
+                <div class="upload-btn-wrapper"><button class="btn btn-secondary btn-xs">Choose Right</button><input type="file" id="pack-cover-upload-right" accept="image/*"></div>
+              </div>
+              <input type="text" id="pack-cover-url-right" placeholder="Or paste Right Web URL" style="margin-top:4px;">
+            </div>
+
+            <!-- Top Flap Artwork -->
+            <div class="form-group image-editor-container" style="margin-bottom:8px;">
+              <label style="color:#ffffff;">5. Top Flap Panel Artwork</label>
+              <div class="upload-controls">
+                <div class="upload-btn-wrapper"><button class="btn btn-secondary btn-xs">Choose Top</button><input type="file" id="pack-cover-upload-top" accept="image/*"></div>
+              </div>
+              <input type="text" id="pack-cover-url-top" placeholder="Or paste Top Web URL" style="margin-top:4px;">
+            </div>
+
+            <!-- Bottom Flap Artwork -->
+            <div class="form-group image-editor-container" style="margin-bottom:8px;">
+              <label style="color:#ffffff;">6. Bottom Flap Panel Artwork</label>
+              <div class="upload-controls">
+                <div class="upload-btn-wrapper"><button class="btn btn-secondary btn-xs">Choose Bottom</button><input type="file" id="pack-cover-upload-bottom" accept="image/*"></div>
+              </div>
+              <input type="text" id="pack-cover-url-bottom" placeholder="Or paste Bottom Web URL" style="margin-top:4px;">
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 11: PACKAGING LIVE PREVIEW (Hidden) -->
+      <div class="app-window hidden" id="win-packaging-preview" style="left: 730px; top: 100px; width: 450px; height: 420px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+            Packaging Live Preview
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body no-scroll" style="background-color: #05070b; display: flex; justify-content: center; align-items: center;">
+          <div class="scaled-packaging-scroll" style="width: 100%; height: 100%; overflow: auto; display: flex; justify-content: center; align-items: center; padding: 20px;">
+            <div id="single-packaging-preview-container"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 5: PACKAGING MASTER PLANNER (Hidden) -->
+      <div class="app-window hidden" id="win-packaging-planner" style="left: 730px; top: 100px; width: 420px; height: 450px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm2 12V5h2v10H7zm4 0V5h2v10h-2z" clip-rule="evenodd"/></svg>
+            Packaging planner
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body" style="padding: 15px;">
+          <p class="help-text">Click which slots on the printed A3 sheet this tuck box should occupy. Place in all 4 slots or leave some empty to save print paper.</p>
+          
+          <div class="packaging-grid-selector">
+            <div class="grid-slot occupied" data-slot="1"><div class="slot-num">Slot 1</div><div class="slot-status">Printed</div></div>
+            <div class="grid-slot occupied" data-slot="2"><div class="slot-num">Slot 2</div><div class="slot-status">Printed</div></div>
+            <div class="grid-slot occupied" data-slot="3"><div class="slot-num">Slot 3</div><div class="slot-status">Printed</div></div>
+            <div class="grid-slot occupied" data-slot="4"><div class="slot-num">Slot 4</div><div class="slot-status">Printed</div></div>
+          </div>
+          
+          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 15px;">
+            <button class="btn btn-secondary btn-xs" id="fill-all-slots">Fill All Slots</button>
+            <button class="btn btn-secondary btn-xs" id="clear-all-slots">Clear All Slots</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 6: UNIVERSAL STYLE & LOCATION INSPECTOR (Hidden) -->
+      <div class="app-window hidden" id="win-style-inspector" style="left: 730px; top: 100px; width: 420px; height: 480px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+            Style & Layout Inspector
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body" style="padding: 15px;">
+          <div class="form-group">
+            <label>Target Element to Style</label>
+            <select id="styler-target-select">
+              <option value="front.title">Front Title (Core Word)</option>
+              <option value="front.tagline">Front Tagline</option>
+              <option value="back.title">Back Title</option>
+              <option value="back.tagline">Back Tagline</option>
+              <option value="back.summary">Back Summary / Verse Description</option>
+              <option value="back.image">Back Image Illustration</option>
+            </select>
+          </div>
+
+          <hr class="editor-divider" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Font Size</label>
+              <input type="text" id="inspector-font-size" placeholder="e.g. 1.2rem">
+            </div>
+            <div class="form-group">
+              <label>Font Family</label>
+              <select id="inspector-font-family">
+                <option value="var(--font-display)">Serif (Lora)</option>
+                <option value="var(--font-body)">Sans (Jakarta)</option>
+                <option value="var(--font-mono)">Monospace (Fira Code)</option>
+                <option value="var(--font-handwritten)">Handwritten (Caveat)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Text Align</label>
+              <select id="inspector-text-align">
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+                <option value="justify">Justify</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Image Fit (For Photos)</label>
+              <select id="inspector-img-fit">
+                <option value="cover">Crop & Fill (Cover)</option>
+                <option value="contain">Show All (Contain)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Margin Top (padding)</label>
+              <input type="text" id="inspector-margin-top" placeholder="e.g. 10px">
+            </div>
+            <div class="form-group">
+              <label>Margin Bottom</label>
+              <input type="text" id="inspector-margin-bottom" placeholder="e.g. 10px">
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top: 15px;">
+            <button class="btn btn-primary" id="btn-styler-apply-this" style="width:100%;">Apply to Active Card</button>
+            <button class="btn btn-secondary" id="btn-styler-apply-all" style="width:100%;">Apply to All Cards in Deck</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 7: PROMPT & AI IMPORTER (Hidden) -->
+      <div class="app-window hidden" id="win-prompt-manager" style="left: 400px; top: 80px; width: 520px; height: 500px; z-index: 100;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm12 7a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3h-3a1 1 0 110-2h3v-3a1 1 0 011-1zM10.158 5.632a1 1 0 00-1.316-1.316l-6 6a1 1 0 000 1.414l6 6a1 1 0 001.316-1.316L5.414 11l4.744-4.744-1.316-1.316z" clip-rule="evenodd"/></svg>
+            Prompt & AI Importer
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body" style="padding: 15px; display:flex; flex-direction:column; gap:10px;">
+          <div class="form-group">
+            <label>Prompt Task Template</label>
+            <select id="prompt-task-select">
+              <option value="decks">Generate 36-Card High-Yield Deck</option>
+              <option value="packaging">Generate Packaging Tuck Box copy</option>
+            </select>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label style="font-size:0.7rem; font-weight:700; text-transform:uppercase; color:var(--text-muted);">AI Instructions Prompt</label>
+            <button class="btn btn-gradient btn-xs" id="copy-ai-prompt-btn">Copy Instructions</button>
+          </div>
+          
+          <textarea id="ai-prompt-instructions" readonly style="height:120px; font-size:0.72rem; line-height:1.3; background: #05070b; color:#34d399; font-family:var(--font-mono); resize:none;"></textarea>
+          
+          <hr class="editor-divider" style="margin:5px 0;" />
+
+          <label style="font-size:0.7rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-top:5px;">Paste AI JSON Output Below</label>
+          <textarea id="prompt-import-textarea" class="code-font" style="flex:1; min-height:100px; resize:none;" placeholder="Paste JSON here..."></textarea>
+          
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span id="prompt-import-status" style="font-size:0.75rem; font-weight:700;"></span>
+            <button class="btn btn-primary btn-xs" id="prompt-import-btn" style="min-width:150px;">Import JSON Content</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 8: HTML/CSS TEMPLATE DESIGNER (Hidden) -->
+      <div class="app-window hidden" id="win-template-designer" style="left: 350px; top: 100px; width: 500px; height: 500px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L9 6.828V14.243zM11.5 7.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" clip-rule="evenodd"/></svg>
+            Template Designer
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body" style="padding:15px; display:flex; flex-direction:column; gap:10px;">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Select Template</label>
+              <select id="template-edit-select">
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group flex-2">
+              <label>Template Title</label>
+              <input type="text" id="template-display-name" value="Standard Study">
+            </div>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>HTML Front Face Template</label>
+            <textarea id="template-front-html" class="code-font" style="height:100%; min-height:90px;"></textarea>
+          </div>
+          <div class="form-group" style="flex:2;">
+            <label>HTML Back Face Template</label>
+            <textarea id="template-back-html" class="code-font" style="height:100%; min-height:150px;"></textarea>
+          </div>
+          <div style="display:flex; gap:10px; justify-content:flex-end;">
+            <button class="btn btn-secondary btn-xs" id="reset-template-btn">Reset Defaults</button>
+            <button class="btn btn-primary btn-xs" id="save-template-btn">Save Template</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 9: PRINT LAYOUT PREVIEW (Hidden) -->
+      <div class="app-window hidden" id="win-print-preview" style="left: 305px; top: 450px; width: 850px; height: 320px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm-1 9H8v3h4v-3z" clip-rule="evenodd"/></svg>
+            Print Sheets Layout
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body" style="background: #05070b;">
+          <div class="print-preview-actions-bar" style="border-bottom: 1px solid var(--border-color); padding: 6px 12px;">
+            <div class="action-item" style="flex-direction:row; align-items:center; gap:8px;">
+              <label style="margin:0;">Layout Target</label>
+              <select id="print-preview-mode">
+                <option value="cards">A3 Cards Duplex Sheets (18-up)</option>
+                <option value="packaging">A3 Packaging Master Page (4-up)</option>
+              </select>
+            </div>
+            <div class="cost-stat-bubble" id="est-sheet-cost">₹0.00</div>
+          </div>
+          <div class="scaled-print-view-scroll" style="height: calc(100% - 35px); overflow: auto; padding: 10px;">
+            <div id="scaled-print-area"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WINDOW 10: HELP & SHORTCUTS (Hidden) -->
+      <div class="app-window hidden" id="win-shortcuts" style="left: 550px; top: 150px; width: 400px; height: 320px;">
+        <div class="win-header">
+          <div class="win-title">
+            <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+            Help & Shortcuts
+          </div>
+          <div class="win-controls">
+            <button class="win-btn win-min" title="Minimize">—</button>
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body" style="padding: 15px; font-size: 0.8rem; line-height:1.4;">
+          <h4 style="margin-bottom:8px;">yaad card editor</h4>
+          <p style="margin-bottom:12px; color:var(--text-muted);">A professional, window-based editor to design custom study flashcards, Stoic quotes, RPG collectibles, and shloks, optimized for colour A3 duplex print layouts.</p>
+          
+          <h5 style="margin-bottom:5px; font-weight:700;">Keyboard Shortcuts</h5>
+          <ul style="padding-left:15px; margin-bottom:12px;">
+            <li><kbd>Spacebar</kbd> : Flip active preview card between Front & Back</li>
+            <li><kbd>&larr;</kbd> (Left Arrow) : Go to previous card</li>
+            <li><kbd>&rarr;</kbd> (Right Arrow) : Go to next card</li>
+          </ul>
+
+          <h5 style="margin-bottom:5px; font-weight:700;">Local Directories</h5>
+          <p style="color:var(--text-muted); font-size:0.75rem;">Decks are saved to <code>decks/</code>. Uploaded images are stored in <code>uploads/</code>.</p>
+        </div>
+      </div>
+
+      <!-- POPUP DIALOGUE: PASTE SINGLE CARD JSON (Hidden) -->
+      <div class="app-window dialog-win hidden" id="win-single-json" style="left: 480px; top: 150px; width: 450px; height: 320px; z-index: 1000;">
+        <div class="win-header">
+          <div class="win-title">Paste Single Card JSON</div>
+          <div class="win-controls">
+            <button class="win-btn win-close" title="Close">×</button>
+          </div>
+        </div>
+        <div class="win-body" style="padding: 15px; display:flex; flex-direction:column; gap:10px;">
+          <p class="help-text" style="margin:0;">Paste a single card JSON object representing a concept.</p>
+          <textarea id="single-card-json-textarea" class="code-font" style="flex:1; width:100%; min-height:120px;" placeholder="{\n  'front': {'title': 'WACC'},\n  'back': {'title': 'Weighted Average', 'summary': 'Average cost...'}\n}"></textarea>
+          <div id="single-import-status" style="font-size:0.75rem; font-weight:700;"></div>
+          <div style="display:flex; gap:10px; justify-content:flex-end;">
+            <button class="btn btn-secondary btn-xs" id="btn-close-single-import">Cancel</button>
+            <button class="btn btn-primary btn-xs" id="btn-do-single-import">Add to Deck</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM SYSTEM TASKBAR -->
+    <footer class="desktop-taskbar">
+      <div class="taskbar-start">
+        <button class="taskbar-btn" id="taskbar-load-btn">
+          <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor" style="margin-right:2px; width:12px; height:12px;"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+          Open Deck
+        </button>
+        <div class="taskbar-load-menu" id="taskbar-load-menu-list"></div>
+      </div>
+      
+      <!-- WINDOW LIST ON TASKBAR -->
+      <div class="taskbar-windows-list" id="taskbar-apps">
+        <button class="taskbar-app-btn active" data-win="win-cards">Navigator</button>
+        <button class="taskbar-app-btn active" data-win="win-card-editor">Editor</button>
+        <button class="taskbar-app-btn active" data-win="win-anki">Anki</button>
+        <button class="taskbar-app-btn" data-win="win-packaging-editor">Packaging</button>
+        <button class="taskbar-app-btn active" data-win="win-packaging-preview">Pack Preview</button>
+        <button class="taskbar-app-btn" data-win="win-packaging-planner">Planner</button>
+        <button class="taskbar-app-btn" data-win="win-style-inspector">Styler</button>
+        <button class="taskbar-app-btn" data-win="win-prompt-manager">Prompt Importer</button>
+        <button class="taskbar-app-btn" data-win="win-template-designer">Designer</button>
+        <button class="taskbar-app-btn" data-win="win-print-preview">Print Sheets</button>
+        <button class="taskbar-app-btn" data-win="win-shortcuts">Help</button>
+      </div>
+
+      <div class="taskbar-end">
+        <span class="system-clock" id="taskbar-clock">01:19</span>
+      </div>
+    </footer>
+    
+  </div>
+
+  <!-- PRINT CONTAINER -->
+  <div id="print-area"></div>
+
+  <!-- App Application JS files -->
+  <script src="app.js"></script>
+</body>
+</html>

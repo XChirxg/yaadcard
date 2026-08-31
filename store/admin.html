@@ -405,6 +405,7 @@
     <nav class="admin-nav">
       <button class="admin-tab-btn active" onclick="switchPanel('preorders-panel', this)">Pre-orders list</button>
       <button class="admin-tab-btn" onclick="switchPanel('searches-panel', this)">Search insights logs</button>
+      <button class="admin-tab-btn" onclick="switchPanel('products-panel', this)">Manage Products</button>
     </nav>
 
     <!-- Panel 1: Pre-orders -->
@@ -504,9 +505,180 @@
       </div>
     </div>
 
+    <!-- Panel 3: Manage Products -->
+    <section class="admin-panel" id="products-panel">
+      <div class="panel-header">
+        <h2>Product Catalog</h2>
+        <button class="btn-admin" onclick="openAddProductModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Add New Product</span>
+        </button>
+      </div>
+
+      <div class="table-container">
+        <table id="products-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Product Details</th>
+              <th>Price (Sale / MRP)</th>
+              <th>Category & Theme</th>
+              <th>Featured</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="products-list-body">
+            <!-- Dynamically populated from Firestore -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </div>
 
+  <!-- Product Edit/Add Modal Overlay -->
+  <div id="product-modal-overlay" style="position: fixed; inset: 0; background: rgba(8, 12, 20, 0.7); backdrop-filter: blur(6px); z-index: 1100; display: none; align-items: center; justify-content: center; padding: 24px; overflow-y: auto;">
+    <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 28px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 14px; position: relative;">
+      <h3 id="modal-title" style="font-family: var(--font-display); font-size: 1.4rem; color: var(--text-main); margin: 0 0 6px 0;">Add Product</h3>
+      
+      <form id="product-editor-form" onsubmit="saveProduct(event)" style="display: flex; flex-direction: column; gap: 12px;">
+        <input type="hidden" id="editor-product-id">
+        
+        <div class="form-group-store" style="display: flex; flex-direction: column; gap: 4px;">
+          <label for="editor-product-name" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Product Name</label>
+          <input type="text" id="editor-product-name" class="form-input-store" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; color: var(--text-main); width: 100%;" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group-store" style="display: flex; flex-direction: column; gap: 4px;">
+            <label for="editor-product-price" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Sale Price (₹)</label>
+            <input type="number" id="editor-product-price" class="form-input-store" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; color: var(--text-main); width: 100%;" required>
+          </div>
+          <div class="form-group-store" style="display: flex; flex-direction: column; gap: 4px;">
+            <label for="editor-product-mrp" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Original MRP (₹)</label>
+            <input type="number" id="editor-product-mrp" class="form-input-store" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; color: var(--text-main); width: 100%;" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group-store" style="display: flex; flex-direction: column; gap: 4px;">
+            <label for="editor-product-category" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Category</label>
+            <input type="text" id="editor-product-category" class="form-input-store" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; color: var(--text-main); width: 100%;" placeholder="e.g. Academics" required>
+          </div>
+          <div class="form-group-store" style="display: flex; flex-direction: column; gap: 4px;">
+            <label for="editor-product-theme" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Theme Color</label>
+            <select id="editor-product-theme" class="form-input-store" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; color: var(--text-main); height: 38px; width: 100%;">
+              <option value="cyan">Cyan</option>
+              <option value="emerald">Emerald</option>
+              <option value="orange">Orange</option>
+              <option value="purple">Purple</option>
+              <option value="gold">Gold</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group-store" style="display: flex; flex-direction: column; gap: 4px;">
+          <label for="editor-product-desc" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Description</label>
+          <textarea id="editor-product-desc" class="form-textarea-store" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; color: var(--text-main); height: 60px; resize: none; width: 100%;" required></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 12px; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <input type="checkbox" id="editor-product-featured" style="width: 16px; height: 16px; cursor: pointer;">
+            <label for="editor-product-featured" style="font-size: 0.85rem; font-weight: 600; color: var(--text-main); cursor: pointer;">Featured Product</label>
+          </div>
+          <div class="form-group-store" style="display: flex; flex-direction: column; gap: 4px;">
+            <label for="editor-product-badge" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Promo Badge</label>
+            <input type="text" id="editor-product-badge" class="form-input-store" style="background: rgba(0, 0, 0, 0.2); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; color: var(--text-main); width: 100%;" placeholder="e.g. BESTSELLER">
+          </div>
+        </div>
+
+        <div class="form-group-store" style="display: flex; flex-direction: column; gap: 4px;">
+          <label for="editor-product-image" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted);">Product Cover Image File</label>
+          <input type="file" id="editor-product-image" accept="image/*" onchange="convertImageToBase64()" style="font-size: 0.8rem; color: var(--text-muted);">
+          <input type="hidden" id="editor-product-image-base64">
+          <div id="image-preview-container" style="display: none; align-items: center; gap: 10px; margin-top: 6px;">
+            <img id="editor-image-preview" src="" style="width: 40px; height: 48px; border-radius: 4px; object-fit: cover; border: 1px solid var(--border-color);">
+            <span style="font-size: 0.75rem; color: var(--success-color);">✓ Image loaded</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 10px;">
+          <button type="submit" class="btn-primary-store" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #34d399, #059669); color: white; border: none; font-weight: 700; border-radius: 6px; width: auto; font-size: 0.90rem;">Save Product</button>
+          <button type="button" class="btn-primary-store btn-admin-secondary" onclick="closeProductModal()" style="flex: 1; padding: 10px; border-radius: 6px; width: auto; font-size: 0.90rem; color: white;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Login Barrier Overlay -->
+  <div id="admin-login-overlay" style="position: fixed; inset: 0; background: var(--bg-primary); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px;">
+    <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 32px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 16px;">
+      <div style="text-align: center; margin-bottom: 8px;">
+        <h2 style="font-family: var(--font-display); font-size: 1.8rem; background: linear-gradient(135deg, #ff3b30, #ff9500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0 0 4px 0;">yaadcard</h2>
+        <span class="admin-tag">Console Access</span>
+      </div>
+      <div id="login-error-msg" style="color: #ef4444; font-size: 0.8rem; text-align: center; display: none; font-weight: 600;">Invalid Username or Password</div>
+      <div class="form-group-store" style="display: flex; flex-direction: column; gap: 6px;">
+        <label for="admin-username" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Username</label>
+        <input type="text" id="admin-username" class="form-input-store" style="background: rgba(0, 0, 0, 0.2); width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main);" placeholder="Enter username">
+      </div>
+      <div class="form-group-store" style="display: flex; flex-direction: column; gap: 6px;">
+        <label for="admin-password" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Password</label>
+        <input type="password" id="admin-password" class="form-input-store" style="background: rgba(0, 0, 0, 0.2); width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main);" placeholder="Enter password" onkeydown="if(event.key === 'Enter') attemptAdminLogin()">
+      </div>
+      <button class="btn-primary-store" onclick="attemptAdminLogin()" style="width: 100%; padding: 12px; margin-top: 8px; font-size: 0.9rem; font-weight: 700; background: linear-gradient(135deg, #ff3b30, #ff9500); border: none; color: white; border-radius: 6px; cursor: pointer;">Login</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+
   <script>
+    // Firebase Config & Init
+    const firebaseConfig = {
+      apiKey: "AIzaSyC4cR2mvd_HviadFoVrOa5a2Iq_gpd_qs0",
+      authDomain: "yaadcard.firebaseapp.com",
+      projectId: "yaadcard",
+      storageBucket: "yaadcard.firebasestorage.app",
+      messagingSenderId: "554394840786",
+      appId: "1:554394840786:web:2cd42d8d7b6b1b751a870b"
+    };
+
+    if (typeof firebase !== 'undefined') {
+      firebase.initializeApp(firebaseConfig);
+      window.db = firebase.firestore();
+    } else {
+      console.warn("Firebase SDK not loaded. Admin dashboard is running in offline local-only fallback mode.");
+    }
+
+    // Admin Auth Functions
+    function checkAdminAuth() {
+      if (sessionStorage.getItem("yaadcard_admin_authenticated") === "true") {
+        document.getElementById("admin-login-overlay").style.display = "none";
+        return true;
+      } else {
+        document.getElementById("admin-login-overlay").style.display = "flex";
+        return false;
+      }
+    }
+
+    function attemptAdminLogin() {
+      const user = document.getElementById("admin-username").value.trim();
+      const pass = document.getElementById("admin-password").value.trim();
+      const errorMsg = document.getElementById("login-error-msg");
+
+      if (user === "chinurag" && pass === "1q2w3e") {
+        sessionStorage.setItem("yaadcard_admin_authenticated", "true");
+        document.getElementById("admin-login-overlay").style.display = "none";
+        errorMsg.style.display = "none";
+        loadDashboard();
+      } else {
+        errorMsg.style.display = "block";
+      }
+    }
+
     // Panel tabs toggle logic
     function switchPanel(panelId, btn) {
       document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("active"));
@@ -516,21 +688,261 @@
       btn.classList.add("active");
     }
 
+    // Global Database State variables
+    const DEFAULT_PRODUCTS = [
+      {
+        id: "47_laws_of_powers",
+        name: "47 Laws of Powers",
+        category: "SelfHelp Books",
+        theme: "gold",
+        image: "product-images/47_laws_of_powers.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "BESTSELLER",
+        description: "Master the rules of influence, strategy, and power based on historical insights. Curated into actionable prompts."
+      },
+      {
+        id: "biology",
+        name: "Biology",
+        category: "Academics",
+        theme: "emerald",
+        image: "product-images/biology.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "HIGH YIELD",
+        description: "High-yield visual flashcards for cellular biology, genetics, human anatomy, and physiological processes."
+      },
+      {
+        id: "business_finance",
+        name: "Business Finance",
+        category: "Academics",
+        theme: "cyan",
+        image: "product-images/business_finance.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "ESSENTIAL",
+        description: "Core corporate finance formulas, balance sheet terms, ratios, valuation, and capital structure principles."
+      },
+      {
+        id: "economics",
+        name: "Economics",
+        category: "Academics",
+        theme: "orange",
+        image: "product-images/economics.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "CORE",
+        description: "Visual summaries of microeconomics, macroeconomics, supply/demand shifts, and fiscal/monetary policies."
+      },
+      {
+        id: "pharmacology",
+        name: "Pharmacology",
+        category: "Academics",
+        theme: "purple",
+        image: "product-images/pharmacology.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "POPULAR",
+        description: "Quick revision for drug classifications, mechanisms of action, major side effects, and clinical indications."
+      },
+      {
+        id: "philosophy",
+        name: "Philosophy",
+        category: "SelfHelp Books",
+        theme: "gold",
+        image: "product-images/philosophy.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "DEEP DIVE",
+        description: "A summary of Stoicism, Existentialism, Rationalism, and major logical reasoning rules for everyday life."
+      },
+      {
+        id: "physics_formulas",
+        name: "Physics Formulas",
+        category: "Academics",
+        theme: "cyan",
+        image: "product-images/physics_formulas.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "REVISION",
+        description: "Fundamental formulas, constants, SI units, equations of motion, electrodynamics, and quantum mechanics."
+      },
+      {
+        id: "indian_polity",
+        name: "Indian Polity",
+        category: "Exams",
+        theme: "orange",
+        image: "product-images/indian_polity.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "EXAM SPECIFIC",
+        description: "Complete guide to the Indian Constitution, articles, amendments, fundamental rights, and governance structures."
+      },
+      {
+        id: "psychology",
+        name: "Psychology",
+        category: "SelfHelp Books",
+        theme: "purple",
+        image: "product-images/psychology.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "INSIGHTFUL",
+        description: "Explore core psychological experiments, human behavioral concepts, and cognitive biases."
+      },
+      {
+        id: "statistics",
+        name: "Statistics",
+        category: "Academics",
+        theme: "emerald",
+        image: "product-images/statistics.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "ANALYTICS",
+        description: "Probability distributions, central limit theorem, hypothesis tests, Z/T/Chi-Square tables, and regressions."
+      },
+      {
+        id: "himachal_collections",
+        name: "Himachal Collections",
+        category: "Exams",
+        theme: "gold",
+        image: "product-images/himachal_collections.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "GK SPECIAL",
+        description: "Curated general knowledge deck covering the history, geography, economy, and culture of Himachal Pradesh."
+      },
+      {
+        id: "truth_and_dare",
+        name: "Truth & Dare Party Pack",
+        category: "Games",
+        theme: "purple",
+        image: "product-images/truth_and_dare.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "COMING SOON",
+        isComingSoon: true,
+        description: "The ultimate deck for ice-breakers, house parties, and family gatherings. Featuring clean and daring prompt modes."
+      },
+      {
+        id: "wanderlust_phrasebook",
+        name: "Wanderlust Travel Deck",
+        category: "Journey",
+        theme: "emerald",
+        image: "product-images/wanderlust_phrasebook.jpg",
+        cardsCount: 30,
+        price: 200,
+        originalPrice: 250,
+        badge: "COMING SOON",
+        isComingSoon: true,
+        description: "Essential travel phrasecards, packing checklists, emergency translations, and navigation guides."
+      },
+      {
+        id: "custom_deck",
+        name: "Custom YaadCard Deck",
+        category: "Other",
+        theme: "cyan",
+        image: "product-images/custom_flashcards.jpg",
+        cardsCount: "Custom",
+        price: 250,
+        originalPrice: 250,
+        badge: "CUSTOM DESIGN",
+        description: "Submit your own notes, syllabus, or topics! We'll format, design, and print a custom flashcard deck just for you."
+      }
+    ];
+
+    let dbPreorders = [];
+    let dbSearches = [];
+    let dbProducts = [];
+    let hasLoadedPreordersFromFirestore = false;
+    let hasLoadedSearchesFromFirestore = false;
+    let hasLoadedProductsFromFirestore = false;
+
     // Initialize Page
     window.addEventListener("DOMContentLoaded", () => {
-      loadDashboard();
+      if (checkAdminAuth()) {
+        loadDashboard();
+      }
     });
 
     function loadDashboard() {
+      if (!checkAdminAuth()) return;
+
+      if (window.db) {
+        // Listen to preorders collection
+        window.db.collection("preorders").onSnapshot((snapshot) => {
+          dbPreorders = [];
+          snapshot.forEach((doc) => {
+            dbPreorders.push(doc.data());
+          });
+          hasLoadedPreordersFromFirestore = true;
+          loadPreorders();
+          calculateMetrics();
+        }, (error) => {
+          console.error("Error listening to preorders in Firestore: ", error);
+          loadLocalPreorders();
+        });
+
+        // Listen to searches collection
+        window.db.collection("searches").onSnapshot((snapshot) => {
+          dbSearches = [];
+          snapshot.forEach((doc) => {
+            dbSearches.push(doc.data());
+          });
+          hasLoadedSearchesFromFirestore = true;
+          loadSearches();
+          calculateMetrics();
+        }, (error) => {
+          console.error("Error listening to searches in Firestore: ", error);
+          loadLocalSearches();
+        });
+
+        // Listen to products collection
+        window.db.collection("products").onSnapshot((snapshot) => {
+          dbProducts = [];
+          snapshot.forEach((doc) => {
+            dbProducts.push(doc.data());
+          });
+          hasLoadedProductsFromFirestore = true;
+          loadProductsTable();
+        }, (error) => {
+          console.error("Error listening to products in Firestore: ", error);
+          loadLocalProducts();
+        });
+      } else {
+        loadLocalPreorders();
+        loadLocalSearches();
+        loadLocalProducts();
+      }
+    }
+
+    function loadLocalPreorders() {
+      hasLoadedPreordersFromFirestore = false;
       loadPreorders();
+      calculateMetrics();
+    }
+
+    function loadLocalSearches() {
+      hasLoadedSearchesFromFirestore = false;
       loadSearches();
       calculateMetrics();
     }
 
     // Calculate Admin stats metrics
     function calculateMetrics() {
-      const preorders = JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
-      const searches = JSON.parse(localStorage.getItem("yaadcard_searches") || "[]");
+      const preorders = hasLoadedPreordersFromFirestore ? dbPreorders : JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
+      const searches = hasLoadedSearchesFromFirestore ? dbSearches : JSON.parse(localStorage.getItem("yaadcard_searches") || "[]");
 
       // Total orders
       document.getElementById("metric-total-orders").textContent = preorders.length;
@@ -553,7 +965,7 @@
 
     // Render pre-orders list table
     function loadPreorders() {
-      const preorders = JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
+      const preorders = hasLoadedPreordersFromFirestore ? dbPreorders : JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
       const filterText = document.getElementById("order-filter").value.toLowerCase();
       const body = document.getElementById("preorders-list-body");
       const emptyState = document.getElementById("preorders-empty");
@@ -626,7 +1038,7 @@
 
     // Render searches list table
     function loadSearches() {
-      const searches = JSON.parse(localStorage.getItem("yaadcard_searches") || "[]");
+      const searches = hasLoadedSearchesFromFirestore ? dbSearches : JSON.parse(localStorage.getItem("yaadcard_searches") || "[]");
       const filterText = document.getElementById("search-filter").value.toLowerCase();
       const body = document.getElementById("searches-list-body");
       const emptyState = document.getElementById("searches-empty");
@@ -672,7 +1084,7 @@
       });
     }
 
-    // Update status in local storage
+    // Update status in local storage and Firestore
     function updateOrderStatus(orderId, newStatus) {
       const preorders = JSON.parse(localStorage.getItem("yaadcard_preorders") || "[]");
       const index = preorders.findIndex(o => o.id === orderId);
@@ -680,20 +1092,35 @@
       if (index > -1) {
         preorders[index].status = newStatus;
         localStorage.setItem("yaadcard_preorders", JSON.stringify(preorders));
-        
-        // Update badge directly
+      }
+
+      if (window.db) {
+        window.db.collection("preorders").doc(orderId.toString()).update({
+          status: newStatus
+        }).then(() => {
+          console.log("Status updated in Firestore successfully.");
+        }).catch((error) => {
+          console.error("Error updating status in Firestore: ", error);
+        });
+      } else {
+        // Update badge directly if offline
         const badge = document.getElementById(`badge-status-${orderId}`);
-        badge.className = `badge-status status-${newStatus.toLowerCase()}`;
-        badge.textContent = newStatus;
-        
+        if (badge) {
+          badge.className = `badge-status status-${newStatus.toLowerCase()}`;
+          badge.textContent = newStatus;
+        }
         calculateMetrics();
       }
     }
 
-    // Export local storage data
+    // Export database data
     function exportData(dataType, format) {
-      const dataKey = dataType === 'preorders' ? 'yaadcard_preorders' : 'yaadcard_searches';
-      const items = JSON.parse(localStorage.getItem(dataKey) || "[]");
+      let items = [];
+      if (dataType === 'preorders') {
+        items = hasLoadedPreordersFromFirestore ? dbPreorders : JSON.parse(localStorage.getItem('yaadcard_preorders') || "[]");
+      } else {
+        items = hasLoadedSearchesFromFirestore ? dbSearches : JSON.parse(localStorage.getItem('yaadcard_searches') || "[]");
+      }
       
       if (items.length === 0) {
         alert("There is no data to export.");
@@ -829,19 +1256,288 @@
       localStorage.setItem("yaadcard_preorders", JSON.stringify(samplePreorders));
       localStorage.setItem("yaadcard_searches", JSON.stringify(sampleSearches));
       
-      loadDashboard();
-      alert("Mock data loaded successfully into localStorage!");
-    }
-
-    // Purge records from localStorage
-    function clearAllData() {
-      if (confirm("⚠️ CAUTION: This will delete ALL pre-orders and search logs from localStorage. This action cannot be undone.\n\nAre you sure you want to proceed?")) {
-        localStorage.removeItem("yaadcard_preorders");
-        localStorage.removeItem("yaadcard_searches");
+      if (window.db) {
+        const batch = window.db.batch();
+        samplePreorders.forEach(order => {
+          const docRef = window.db.collection("preorders").doc(order.id.toString());
+          batch.set(docRef, order);
+        });
+        sampleSearches.forEach(search => {
+          const docRef = window.db.collection("searches").doc(search.query.toLowerCase());
+          batch.set(docRef, search);
+        });
+        batch.commit().then(() => {
+          alert("Mock data loaded successfully into localStorage and Firestore!");
+        }).catch(err => {
+          console.error("Error writing batch mock data: ", err);
+          alert("Mock data loaded into localStorage, but failed to write to Firestore.");
+        });
+      } else {
         loadDashboard();
-        alert("All database records cleared from localStorage.");
+        alert("Mock data loaded successfully into localStorage!");
       }
     }
+
+    // Purge records from localStorage and Firestore
+    function clearAllData() {
+      if (confirm("⚠️ CAUTION: This will delete ALL pre-orders and search logs from localStorage and Firestore. This action cannot be undone.\n\nAre you sure you want to proceed?")) {
+        localStorage.removeItem("yaadcard_preorders");
+        localStorage.removeItem("yaadcard_searches");
+
+        if (window.db) {
+          const deleteCollection = (colName) => {
+            return window.db.collection(colName).get().then(snapshot => {
+              const batch = window.db.batch();
+              snapshot.forEach(doc => {
+                batch.delete(doc.ref);
+              });
+              return batch.commit();
+            });
+          };
+
+          Promise.all([deleteCollection("preorders"), deleteCollection("searches")])
+            .then(() => {
+              alert("All database records cleared from localStorage and Firestore.");
+            })
+            .catch(err => {
+              console.error("Error purging Firestore data: ", err);
+              alert("Purged localStorage, but failed to clear all Firestore documents.");
+            });
+        } else {
+          loadDashboard();
+          alert("All database records cleared from localStorage.");
+        }
+      }
+    }
+
+    // Product Catalog Editor Controller methods
+    function loadLocalProducts() {
+      hasLoadedProductsFromFirestore = false;
+      dbProducts = [...DEFAULT_PRODUCTS];
+      loadProductsTable();
+    }
+
+    function loadProductsTable() {
+      const tbody = document.getElementById("products-list-body");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      const products = dbProducts.length > 0 ? dbProducts : DEFAULT_PRODUCTS;
+
+      products.forEach(p => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <div style="width: 40px; height: 48px; border-radius: 4px; overflow: hidden; background: #0f172a; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;">
+              <img src="${p.image}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://placehold.co/40x48/png?text=Cover'">
+            </div>
+          </td>
+          <td>
+            <div style="font-weight: 700; color: var(--text-main); font-size: 0.9rem;">${p.name}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 320px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${p.description}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600; color: var(--text-main); font-size: 0.85rem;">₹${p.price}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-decoration: line-through;">₹${p.originalPrice}</div>
+          </td>
+          <td>
+            <div style="font-size: 0.8rem; font-weight: 600; color: #38bdf8;">${p.category || 'N/A'}</div>
+            <span style="font-size: 0.7rem; text-transform: uppercase; color: var(--${p.theme}-primary, #cbd5e1); font-weight: 700;">${p.theme || 'default'}</span>
+          </td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span class="badge-status ${p.featured ? 'status-confirmed' : 'status-pending'}" style="cursor: pointer;" onclick="toggleProductFeatured('${p.id}')">
+                ${p.featured ? 'Featured' : 'Standard'}
+              </span>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn-admin btn-admin-secondary" style="padding: 4px 8px; font-size: 0.75rem;" onclick="openEditProductModal('${p.id}')">Edit</button>
+              <button class="btn-admin btn-admin-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="deleteProduct('${p.id}')">Remove</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.openAddProductModal = function() {
+      document.getElementById("modal-title").textContent = "Add Product";
+      document.getElementById("product-editor-form").reset();
+      document.getElementById("editor-product-id").value = "";
+      document.getElementById("editor-product-image-base64").value = "";
+      document.getElementById("image-preview-container").style.display = "none";
+      document.getElementById("product-modal-overlay").style.display = "flex";
+    };
+
+    window.openEditProductModal = function(productId) {
+      const products = dbProducts.length > 0 ? dbProducts : DEFAULT_PRODUCTS;
+      const p = products.find(prod => prod.id === productId);
+      if (!p) return;
+
+      document.getElementById("modal-title").textContent = "Edit Product";
+      document.getElementById("editor-product-id").value = p.id;
+      document.getElementById("editor-product-name").value = p.name;
+      document.getElementById("editor-product-price").value = p.price;
+      document.getElementById("editor-product-mrp").value = p.originalPrice;
+      document.getElementById("editor-product-category").value = p.category || "";
+      document.getElementById("editor-product-theme").value = p.theme || "cyan";
+      document.getElementById("editor-product-desc").value = p.description || "";
+      document.getElementById("editor-product-featured").checked = p.featured || false;
+      document.getElementById("editor-product-badge").value = p.badge || "";
+      
+      const imageBase64Input = document.getElementById("editor-product-image-base64");
+      const previewImg = document.getElementById("editor-image-preview");
+      const previewContainer = document.getElementById("image-preview-container");
+
+      if (p.image) {
+        imageBase64Input.value = p.image;
+        previewImg.src = p.image;
+        previewContainer.style.display = "flex";
+      } else {
+        imageBase64Input.value = "";
+        previewContainer.style.display = "none";
+      }
+
+      document.getElementById("product-modal-overlay").style.display = "flex";
+    };
+
+    window.closeProductModal = function() {
+      document.getElementById("product-modal-overlay").style.display = "none";
+    };
+
+    window.convertImageToBase64 = function() {
+      const fileInput = document.getElementById("editor-product-image");
+      const base64Input = document.getElementById("editor-product-image-base64");
+      const previewImg = document.getElementById("editor-image-preview");
+      const previewContainer = document.getElementById("image-preview-container");
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          base64Input.value = e.target.result;
+          previewImg.src = e.target.result;
+          previewContainer.style.display = "flex";
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+    };
+
+    window.saveProduct = function(e) {
+      e.preventDefault();
+
+      const id = document.getElementById("editor-product-id").value;
+      const name = document.getElementById("editor-product-name").value.trim();
+      const price = parseFloat(document.getElementById("editor-product-price").value);
+      const mrp = parseFloat(document.getElementById("editor-product-mrp").value);
+      const category = document.getElementById("editor-product-category").value.trim();
+      const theme = document.getElementById("editor-product-theme").value;
+      const desc = document.getElementById("editor-product-desc").value.trim();
+      const featured = document.getElementById("editor-product-featured").checked;
+      const badge = document.getElementById("editor-product-badge").value.trim();
+      const imageBase64 = document.getElementById("editor-product-image-base64").value;
+
+      // Enforce limit of 4 featured products
+      if (featured) {
+        const currentFeatured = dbProducts.filter(p => p.featured && p.id !== id);
+        if (currentFeatured.length >= 4) {
+          alert("Maximum 4 products can be featured at the top of the homepage. Please uncheck another featured product first.");
+          return;
+        }
+      }
+
+      const generatedId = id || name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+
+      const productData = {
+        id: generatedId,
+        name: name,
+        price: price,
+        originalPrice: mrp,
+        category: category,
+        theme: theme,
+        description: desc,
+        featured: featured,
+        badge: badge || null,
+        image: imageBase64 || "product-images/custom_flashcards.jpg",
+        cardsCount: 30
+      };
+
+      if (window.db) {
+        window.db.collection("products").doc(generatedId).set(productData)
+          .then(() => {
+            alert(id ? "Product updated successfully!" : "Product added successfully!");
+            closeProductModal();
+          })
+          .catch(err => {
+            console.error("Error saving product: ", err);
+            alert("Error saving product: " + err.message);
+          });
+      } else {
+        const idx = dbProducts.findIndex(p => p.id === generatedId);
+        if (idx > -1) {
+          dbProducts[idx] = productData;
+        } else {
+          dbProducts.push(productData);
+        }
+        loadProductsTable();
+        closeProductModal();
+        alert("Product saved locally (Offline mode).");
+      }
+    };
+
+    window.deleteProduct = function(productId) {
+      if (productId === "custom_deck") {
+        alert("The Custom YaadCard Deck item cannot be deleted as it is a core checkout system dependency.");
+        return;
+      }
+
+      if (!confirm("Are you sure you want to remove this product from the catalog?")) {
+        return;
+      }
+
+      if (window.db) {
+        window.db.collection("products").doc(productId).delete()
+          .then(() => {
+            alert("Product removed successfully!");
+          })
+          .catch(err => {
+            console.error("Error deleting product: ", err);
+            alert("Error deleting product: " + err.message);
+          });
+      } else {
+        dbProducts = dbProducts.filter(p => p.id !== productId);
+        loadProductsTable();
+        alert("Product removed locally.");
+      }
+    };
+
+    window.toggleProductFeatured = function(productId) {
+      const products = dbProducts.length > 0 ? dbProducts : DEFAULT_PRODUCTS;
+      const p = products.find(prod => prod.id === productId);
+      if (!p) return;
+
+      const newFeaturedState = !p.featured;
+
+      if (newFeaturedState) {
+        const currentFeatured = products.filter(prod => prod.featured && prod.id !== productId);
+        if (currentFeatured.length >= 4) {
+          alert("Maximum 4 products can be featured at the top of the homepage. Please disable another featured product first.");
+          return;
+        }
+      }
+
+      if (window.db) {
+        window.db.collection("products").doc(productId).update({
+          featured: newFeaturedState
+        }).catch(err => {
+          console.error("Error updating featured status: ", err);
+        });
+      } else {
+        p.featured = newFeaturedState;
+        loadProductsTable();
+      }
+    };
   </script>
 </body>
 </html>
