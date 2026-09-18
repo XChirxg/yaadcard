@@ -1,0 +1,114 @@
+/* ==========================================================================
+   Plain / Blank Card Canvas Styling (5cm x 9.5cm • 27 Cards per Sheet)
+   ========================================================================== */
+
+:root {
+  --plain-font-size: 11pt;
+  --plain-font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --plain-text-align: center;
+  --plain-justify: center;
+  --plain-padding: 4.5mm;
+  --plain-color: #0f172a;
+}
+
+/* Vertical (Portrait Content) */
+.plain-card-slot {
+  width: 100% !important;
+  height: 100% !important;
+  padding: var(--plain-padding) !important;
+  box-sizing: border-box !important;
+  background-color: #ffffff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: var(--plain-justify) !important;
+  align-items: stretch !important;
+  text-align: var(--plain-text-align) !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.plain-card-slot.vertical {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: var(--plain-justify) !important;
+  align-items: stretch !important;
+  padding: var(--plain-padding) !important;
+}
+
+/* Horizontal (Rotated 90° Content inside 50mm x 95mm card) */
+.plain-card-slot.horizontal {
+  padding: 0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background-color: #ffffff !important;
+  display: block !important;
+}
+
+.plain-card-slot.horizontal .plain-rotate-inner {
+  width: 95mm !important;
+  height: 50mm !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) !important;
+  transform-origin: center center !important;
+  padding: var(--plain-padding) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: var(--plain-justify) !important;
+  align-items: stretch !important;
+  text-align: var(--plain-text-align) !important;
+  background-color: #ffffff !important;
+}
+
+.plain-card-body {
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: var(--plain-justify);
+}
+
+.plain-text {
+  font-family: var(--plain-font-family);
+  font-size: var(--card-custom-fs, var(--plain-font-size));
+  line-height: 1.4;
+  color: var(--plain-color);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.plain-img-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.plain-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.plain-html {
+  font-family: var(--plain-font-family);
+  font-size: var(--card-custom-fs, var(--plain-font-size));
+  color: var(--plain-color);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Print Overrides */
+@media print {
+  .plain-card-slot, .plain-rotate-inner {
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

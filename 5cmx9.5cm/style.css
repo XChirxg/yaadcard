@@ -1,0 +1,1085 @@
+/* ==========================================================================
+   5cm x 9.5cm Single-Sided Sheet Editor (27 Cards per A3 / 12x18)
+   ========================================================================== */
+
+:root {
+  --bg-primary: #080c14;
+  --bg-secondary: #0f172a;
+  --bg-card-panel: #131d33;
+  --bg-glass: rgba(15, 23, 42, 0.75);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-focus: #38bdf8;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --font-display: 'Lora', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'Fira Code', 'Courier New', Courier, monospace;
+  --font-card: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Theme Colors */
+  --cyan-primary: #06b6d4;
+  --cyan-rgb: 6, 182, 212;
+  --orange-primary: #f97316;
+  --orange-rgb: 249, 115, 22;
+  --purple-primary: #a855f7;
+  --purple-rgb: 168, 85, 247;
+  --emerald-primary: #10b981;
+  --emerald-rgb: 16, 185, 129;
+  --gold-primary: #eab308;
+  --gold-rgb: 234, 179, 8;
+  --rose-primary: #f43f5e;
+  --rose-rgb: 244, 63, 94;
+  --blue-primary: #3b82f6;
+  --blue-rgb: 59, 130, 246;
+
+  /* 12x18 Paper Standard (Default - Physical 50mm x 95mm) */
+  --card-w: 50.0mm;
+  --card-h: 95.0mm;
+  --grid-cols: 9;
+  --grid-rows: 3;
+  --sheet-w: 457.2mm; /* 18 inches */
+  --sheet-h: 304.8mm; /* 12 inches */
+}
+
+/* Paper Size: Standard ISO A3 Overrides */
+body[data-paper="iso-a3"] {
+  --card-w: 45.66mm;
+  --card-h: 86.75mm;
+  --grid-cols: 9;
+  --grid-rows: 3;
+  --sheet-w: 420.0mm;
+  --sheet-h: 297.0mm;
+}
+
+/* Content Orientation is handled within each card without changing page or card dimensions */
+
+/* Base Resets */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100vh;
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Screen Workspace Layout
+   ========================================================================== */
+
+.editor-workspace {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.premium-card {
+  position: relative;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+/* Simulated Tuck Crop Marks */
+.crop-mark {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  opacity: 0.35;
+}
+.top-left-crop { top: 12px; left: 12px; border-top: 2px solid #38bdf8; border-left: 2px solid #38bdf8; }
+.top-right-crop { top: 12px; right: 12px; border-top: 2px solid #38bdf8; border-right: 2px solid #38bdf8; }
+.bottom-left-crop { bottom: 12px; left: 12px; border-bottom: 2px solid #38bdf8; border-left: 2px solid #38bdf8; }
+.bottom-right-crop { bottom: 12px; right: 12px; border-bottom: 2px solid #38bdf8; border-right: 2px solid #38bdf8; }
+
+/* Color Accent Stripe */
+.tuck-color-stripe {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  width: 100%;
+  height: 5px;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.stripe-bar { flex: 1; height: 100%; }
+.cyan-bar { background: var(--cyan-primary); }
+.orange-bar { background: var(--orange-primary); }
+.purple-bar { background: var(--purple-primary); }
+.emerald-bar { background: var(--emerald-primary); }
+.gold-bar { background: var(--gold-primary); }
+
+/* Header UI */
+.card-header-ui {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.brand h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #38bdf8, #06b6d4, #10b981);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-badge {
+  background: rgba(6, 182, 212, 0.12);
+  color: #22d3ee;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Control Pills & Buttons */
+.toggle-pill {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border-glass);
+  gap: 4px;
+}
+
+.pill-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.pill-btn:hover {
+  background: var(--border-glass);
+  color: #fff;
+}
+
+.pill-btn.active {
+  background: linear-gradient(135deg, #0284c7, #06b6d4);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.35);
+}
+
+/* Body Controls Layout */
+.card-body-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.control-card {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border-glass);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.prompt-topic-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-glass);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.prompt-topic-input:focus {
+  border-color: #38bdf8;
+}
+
+/* Button Styles */
+.btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, #0284c7, #06b6d4);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+}
+
+.btn-gradient:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.45);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Textarea & Validation */
+.textarea-container {
+  position: relative;
+}
+
+#json-input {
+  width: 100%;
+  min-height: 160px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-glass);
+  border-radius: 10px;
+  padding: 14px 16px;
+  color: #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
+#json-input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px #38bdf8;
+}
+
+.validation-badge {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  margin-top: 8px;
+}
+
+.validation-badge.success {
+  display: inline-flex;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.validation-badge.error {
+  display: inline-flex;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* Stats Row */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-glass);
+  border-radius: 10px;
+  padding: 12px 18px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-lbl {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-dim);
+}
+
+.stat-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #38bdf8;
+  font-family: var(--font-mono);
+}
+
+/* Prompt Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.modal-header h3 {
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.prompt-code-block {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #38bdf8;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 380px;
+  overflow-y: auto;
+  line-height: 1.45;
+}
+
+.modal-footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--border-glass);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   Interactive Screen Preview Section
+   ========================================================================== */
+
+.preview-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.preview-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.zoom-slider {
+  width: 120px;
+  accent-color: #06b6d4;
+  cursor: pointer;
+}
+
+.screen-preview-container {
+  background: #030712;
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  padding: 24px;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 520px;
+}
+
+/* Sheet Scaler in Screen Preview */
+.sheet-preview-wrapper {
+  transform-origin: top center;
+  transition: transform 0.15s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Gallery View */
+.inspector-carousel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px 0;
+  max-width: 1200px;
+}
+
+/* ==========================================================================
+   Card Styling: Single-Sided 5cm x 9.5cm
+   ========================================================================== */
+
+/* Outer wrapper representing 1 card cut zone (Always 50mm x 95mm on sheet) */
+.print-card-wrapper {
+  box-sizing: border-box !important;
+  width: var(--card-w) !important;
+  height: var(--card-h) !important;
+  overflow: hidden !important;
+  background-color: #ffffff !important;
+  border-right: 0.5px solid #94a3b8 !important; /* Razor-thin cutting guide */
+  border-bottom: 0.5px solid #94a3b8 !important; /* Razor-thin cutting guide */
+  position: relative !important;
+  border-radius: 0 !important;
+}
+
+/* Inner printable card content (Default: Vertical / Portrait 50mm x 95mm) */
+.print-card {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 1.2mm 1.5mm !important; /* Safety gutter */
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  overflow: hidden !important;
+  border-radius: 0 !important;
+  font-family: var(--font-card) !important;
+}
+
+/* Horizontal Content Mode: Rotated 90deg to fit inside 50mm x 95mm cut slot on sheet */
+.print-card-wrapper.card-horizontal {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.print-card-wrapper.card-horizontal .print-card {
+  position: absolute !important;
+  width: var(--card-h) !important; /* 95.0mm */
+  height: var(--card-w) !important; /* 50.0mm */
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) !important;
+  transform-origin: center center !important;
+  padding: 1.4mm 2.0mm !important;
+}
+
+/* Inspector / Gallery View for Horizontal Cards */
+.inspector-carousel .print-card-wrapper.card-horizontal {
+  width: 140mm !important;
+  height: 75mm !important;
+}
+
+.inspector-carousel .print-card-wrapper.card-horizontal .print-card {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  padding: 2.0mm 2.6mm !important;
+}
+
+/* Internal frame with theme accent */
+.card-frame {
+  border: 1.5px solid var(--theme-color) !important;
+  border-radius: 0 !important;
+  background: #ffffff !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 1.6mm 1.8mm !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  overflow: hidden !important;
+  justify-content: space-between !important;
+}
+
+/* Card Header (Category + Card ID) */
+.card-top-bar {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-bottom: 0.8mm !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding-bottom: 0.6mm !important;
+}
+
+.card-category-badge {
+  font-family: var(--font-mono) !important;
+  font-size: 0.56rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: var(--theme-color) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 76% !important;
+}
+
+.card-id-tag {
+  font-family: var(--font-mono) !important;
+  font-size: 0.56rem !important;
+  font-weight: 800 !important;
+  color: #64748b !important;
+}
+
+/* Card Titles */
+.card-title-block {
+  margin-bottom: 0.8mm !important;
+}
+
+.card-main-title {
+  font-family: var(--font-display) !important;
+  font-size: 0.98rem !important;
+  font-weight: 800 !important;
+  line-height: 1.22 !important;
+  color: #0f172a !important;
+  margin-bottom: 0.4mm !important;
+  letter-spacing: -0.01em !important;
+}
+
+.card-tagline {
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  font-style: italic !important;
+  line-height: 1.28 !important;
+  color: #475569 !important;
+  margin-bottom: 0.6mm !important;
+}
+
+/* Core Content Body */
+.card-body-content {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.8mm !important;
+  overflow: hidden !important;
+}
+
+.card-summary {
+  font-size: 0.74rem !important;
+  line-height: 1.38 !important;
+  color: #1e293b !important;
+  font-weight: 500 !important;
+  white-space: pre-line !important;
+}
+
+/* Dedicated Quote & Shayari Layout */
+.card-quote-layout {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+  padding: 1.0mm 0.5mm !important;
+  position: relative !important;
+  gap: 1.0mm !important;
+}
+
+.card-quote-mark {
+  font-family: var(--font-display) !important;
+  font-size: 1.5rem !important;
+  line-height: 0.8 !important;
+  color: var(--theme-color) !important;
+  opacity: 0.5 !important;
+}
+
+.card-quote-text {
+  font-family: var(--font-display) !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  line-height: 1.45 !important;
+  color: #0f172a !important;
+  font-style: italic !important;
+  white-space: pre-line !important;
+  word-break: break-word !important;
+  max-width: 100% !important;
+}
+
+.card-quote-author {
+  font-family: var(--font-body) !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  color: var(--theme-color) !important;
+  letter-spacing: 0.03em !important;
+  margin-top: 0.6mm !important;
+}
+
+.card-quote-meaning {
+  font-size: 0.58rem !important;
+  color: #64748b !important;
+  line-height: 1.3 !important;
+  font-style: italic !important;
+  border-top: 0.5px solid #e2e8f0 !important;
+  padding-top: 0.6mm !important;
+  margin-top: 0.6mm !important;
+  width: 92% !important;
+}
+
+/* Key Points Bullet List */
+.card-keypoints {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.8mm !important;
+}
+
+.card-keypoints li {
+  font-size: 0.64rem !important;
+  line-height: 1.3 !important;
+  color: #1e293b !important;
+  position: relative !important;
+  padding-left: 2.8mm !important;
+}
+
+.card-keypoints li::before {
+  content: "•" !important;
+  position: absolute !important;
+  left: 0.5mm !important;
+  top: -0.2mm !important;
+  color: var(--theme-color) !important;
+  font-size: 0.75rem !important;
+  font-weight: 900 !important;
+}
+
+/* Tables inside Card */
+.card-table-wrapper {
+  width: 100% !important;
+  border: 0.6px solid #cbd5e1 !important;
+  overflow: hidden !important;
+  margin: 0.4mm 0 !important;
+}
+
+.card-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 0.56rem !important;
+  line-height: 1.25 !important;
+}
+
+.card-table th {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  padding: 0.8mm 1mm !important;
+  text-align: left !important;
+  border-bottom: 0.6px solid #cbd5e1 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+.card-table td {
+  padding: 0.6mm 1mm !important;
+  border-bottom: 0.5px solid #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+.card-table tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Monospace Diagram */
+.card-diagram-block {
+  font-family: var(--font-mono) !important;
+  font-size: 0.52rem !important;
+  background: #f8fafc !important;
+  border: 0.6px solid #e2e8f0 !important;
+  padding: 0.8mm 1.2mm !important;
+  color: #0f766e !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+  line-height: 1.22 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Mnemonic / Memory Tip Box */
+.card-mnemonic-box {
+  background: rgba(var(--theme-color-rgb), 0.08) !important;
+  border-left: 2px solid var(--theme-color) !important;
+  padding: 0.8mm 1.2mm !important;
+  font-size: 0.62rem !important;
+  line-height: 1.28 !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+/* Card Footer (Clean Minimal Styling) */
+.card-footer {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  border-top: 0.8px solid #e2e8f0 !important;
+  padding-top: 0.6mm !important;
+  margin-top: 0.8mm !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.52rem !important;
+  color: #64748b !important;
+  letter-spacing: 0.04em !important;
+}
+
+.card-footer span {
+  font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   Horizontal Card Layout Specifics (95mm x 50mm)
+   ========================================================================== */
+
+.card-horizontal .card-frame {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 1.4mm 2.0mm !important;
+}
+
+.card-horizontal .card-top-bar {
+  margin-bottom: 0.6mm !important;
+  padding-bottom: 0.4mm !important;
+}
+
+.card-horizontal .card-horizontal-split {
+  display: grid !important;
+  grid-template-columns: 1.15fr 0.85fr !important;
+  gap: 2.2mm !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+
+.card-horizontal .card-col-left {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.6mm !important;
+  overflow: hidden !important;
+}
+
+.card-horizontal .card-col-right {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.6mm !important;
+  overflow: hidden !important;
+  border-left: 0.6px dashed #cbd5e1 !important;
+  padding-left: 1.8mm !important;
+}
+
+.card-horizontal .card-main-title {
+  font-size: 0.88rem !important;
+  margin-bottom: 0.4mm !important;
+}
+
+.card-horizontal .card-tagline {
+  font-size: 0.64rem !important;
+  margin-bottom: 0.4mm !important;
+}
+
+.card-horizontal .card-summary {
+  font-size: 0.66rem !important;
+}
+
+.card-horizontal .card-keypoints li {
+  font-size: 0.60rem !important;
+}
+
+.card-horizontal .card-footer {
+  margin-top: 0.4mm !important;
+  padding-top: 0.4mm !important;
+  font-size: 0.50rem !important;
+}
+
+/* ==========================================================================
+   A3 Print Document Layout Engine (27 Cards per Sheet)
+   ========================================================================== */
+
+/* Print Area (Hidden in screen workspace, rendered for print) */
+#print-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Print Page Container */
+.print-page {
+  box-sizing: border-box !important;
+  width: var(--sheet-w) !important;
+  height: var(--sheet-h) !important;
+  background-color: #ffffff !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 3.5mm 3.6mm !important; /* Thin margins exactly as requested */
+  page-break-after: always !important;
+  break-after: page !important;
+  page-break-inside: avoid !important;
+  position: relative !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  margin-bottom: 24px;
+}
+
+.print-page:last-child {
+  page-break-after: avoid !important;
+  break-after: avoid !important;
+}
+
+/* Sheet Top & Bottom Banners */
+.print-page-header {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.46rem !important;
+  font-weight: 700 !important;
+  color: #475569 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding-bottom: 1.0mm !important;
+  box-sizing: border-box !important;
+}
+
+.print-page-footer {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.43rem !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  border-top: 1px solid #e2e8f0 !important;
+  padding-top: 1.0mm !important;
+  box-sizing: border-box !important;
+}
+
+/* The 27-Card Grid with Shared Hairline Cutting Guides */
+.print-grid {
+  display: grid !important;
+  box-sizing: border-box !important;
+  grid-template-columns: repeat(var(--grid-cols), var(--card-w)) !important;
+  grid-template-rows: repeat(var(--grid-rows), var(--card-h)) !important;
+  gap: 0 !important;
+  border-top: 0.5px solid #94a3b8 !important;  /* Top cutting edge */
+  border-left: 0.5px solid #94a3b8 !important; /* Left cutting edge */
+  margin: auto !important;
+}
+
+/* Prevent scrollbars from ever appearing inside cards */
+.print-card-wrapper, .print-card, .card-frame, .card-body-content, .card-table-wrapper, .card-diagram-block {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+}
+.print-card-wrapper::-webkit-scrollbar, .print-card::-webkit-scrollbar, .card-frame::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* ==========================================================================
+   Print Media Rules (@media print)
+   ========================================================================== */
+
+@media print {
+  @page {
+    size: 18in 12in landscape;
+    margin: 0 !important;
+  }
+
+  /* Hide all screen editor interfaces */
+  .editor-workspace, .modal-overlay, .screen-preview-container, .zoom-controls, .preview-section {
+    display: none !important;
+  }
+
+  /* Reset document for clean vector print */
+  html, body {
+    display: block !important;
+    position: static !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  #print-area {
+    display: block !important;
+    background-color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .print-page {
+    box-shadow: none !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    max-height: calc(var(--sheet-h) - 0.2mm) !important;
+    height: calc(var(--sheet-h) - 0.2mm) !important;
+    overflow: hidden !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .print-page:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Force exact colors in Chrome/Safari/Firefox */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

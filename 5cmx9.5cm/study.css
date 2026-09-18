@@ -1,0 +1,299 @@
+/* ==========================================================================
+   Study Flashcards Styling (5cm x 9.5cm • 27 Cards per Sheet)
+   High-yield study cards, KaTeX formulas, tables, mnemonics, key points.
+   With colored borders, rich vibrant palettes, and yaadcard branding.
+   ========================================================================== */
+
+:root {
+  --study-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --study-font-mono: 'Fira Code', monospace;
+  --study-text-main: #0f172a;
+  --study-text-muted: #475569;
+  --study-text-dim: #64748b;
+  --study-border: #e2e8f0;
+}
+
+/* Card Slot inside .print-card-wrapper (50mm x 95mm) */
+.study-card-slot {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* --------------------------------------------------------------------------
+   Vertical Layout (Portrait Content with Colored Border)
+   -------------------------------------------------------------------------- */
+.study-card-slot.vertical {
+  margin: 1.2mm auto !important;
+  width: calc(100% - 2.4mm) !important;
+  height: calc(100% - 2.4mm) !important;
+  border: 1.4px solid var(--card-accent, #06b6d4) !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 3mm 3.5mm 2.8mm !important;
+  box-sizing: border-box !important;
+}
+
+/* --------------------------------------------------------------------------
+   Horizontal Layout (Rotated 90° Content with Colored Border)
+   -------------------------------------------------------------------------- */
+.study-card-slot.horizontal {
+  padding: 0 !important;
+  display: block !important;
+}
+
+.study-card-slot.horizontal .study-rotate-inner {
+  width: calc(95mm - 2.4mm) !important;
+  height: calc(50mm - 2.4mm) !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) !important;
+  transform-origin: center center !important;
+  border: 1.4px solid var(--card-accent, #06b6d4) !important;
+  border-radius: 4px !important;
+  padding: 2.5mm 4mm !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  background-color: #ffffff !important;
+}
+
+.study-horizontal-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3.5mm;
+  flex: 1;
+  align-items: start;
+  overflow: hidden;
+}
+
+:root {
+  --study-base-fs: 10pt;
+}
+
+.study-card-slot {
+  --card-effective-fs: var(--card-custom-fs, var(--study-base-fs, 10pt));
+}
+
+.study-card-slot.horizontal .study-title {
+  font-size: calc(var(--card-effective-fs) * 0.88);
+  margin-bottom: 0.8mm;
+}
+
+.study-card-slot.horizontal .study-tagline {
+  font-size: calc(var(--card-effective-fs) * 0.62);
+  margin-bottom: 1.2mm;
+}
+
+.study-card-slot.horizontal .study-summary {
+  font-size: calc(var(--card-effective-fs) * 0.65);
+  line-height: 1.3;
+  margin-bottom: 1.5mm;
+}
+
+.study-card-slot.horizontal .study-points-list {
+  gap: 1mm;
+  margin-bottom: 1mm;
+}
+
+.study-card-slot.horizontal .study-point-item {
+  font-size: calc(var(--card-effective-fs) * 0.62);
+  line-height: 1.3;
+}
+
+.study-card-slot.horizontal .study-table {
+  font-size: calc(var(--card-effective-fs) * 0.58);
+  margin-bottom: 1.5mm;
+}
+
+.study-card-slot.horizontal .study-mnemonic-box {
+  padding: 1.2mm 2mm;
+}
+
+.study-card-slot.horizontal .study-mnemonic-lbl {
+  font-size: 4.8pt;
+}
+
+.study-card-slot.horizontal .study-mnemonic-text {
+  font-size: calc(var(--card-effective-fs) * 0.58);
+}
+
+/* Card Header */
+.study-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5mm;
+}
+
+/* YAADCARD Subtle Neutral Brand Tag */
+.study-brand-pill {
+  font-family: var(--study-font);
+  font-size: 4.8pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  opacity: 0.65;
+  user-select: none;
+}
+
+.study-title {
+  font-family: var(--study-font);
+  font-size: calc(var(--card-effective-fs) * 0.90);
+  font-weight: 800;
+  color: var(--study-text-main);
+  line-height: 1.25;
+  margin-bottom: 1.5mm;
+  letter-spacing: -0.01em;
+}
+
+.study-tagline {
+  font-family: var(--study-font);
+  font-size: calc(var(--card-effective-fs) * 0.68);
+  font-style: italic;
+  color: var(--study-text-muted);
+  line-height: 1.35;
+  margin-bottom: 2mm;
+}
+
+.study-summary {
+  font-family: var(--study-font);
+  font-size: calc(var(--card-effective-fs) * 0.72);
+  line-height: 1.4;
+  color: var(--study-text-main);
+  margin-bottom: 2mm;
+}
+
+/* Key Points */
+.study-points-list {
+  list-style: none;
+  margin: 0 0 2mm 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2mm;
+}
+
+.study-point-item {
+  font-family: var(--study-font);
+  font-size: calc(var(--card-effective-fs) * 0.68);
+  line-height: 1.35;
+  color: var(--study-text-main);
+  position: relative;
+  padding-left: 3.5mm;
+}
+
+.study-point-item::before {
+  content: "•";
+  position: absolute;
+  left: 0.8mm;
+  top: 0;
+  color: var(--card-accent, #06b6d4);
+  font-weight: 900;
+  font-size: 8pt;
+  line-height: 1;
+}
+
+/* Table */
+.study-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--study-font);
+  font-size: 6.2pt;
+  margin-bottom: 2mm;
+}
+
+.study-table th {
+  background: rgba(var(--card-rgb, 6, 182, 212), 0.1);
+  color: var(--card-accent, #06b6d4);
+  font-weight: 700;
+  text-align: left;
+  padding: 1.5px 3px;
+  border: 0.5px solid #cbd5e1;
+}
+
+.study-table td {
+  padding: 1.5px 3px;
+  border: 0.5px solid #e2e8f0;
+  color: var(--study-text-main);
+}
+
+/* Diagram Box */
+.study-diagram {
+  background: #f8fafc;
+  border: 0.5px dashed #cbd5e1;
+  border-radius: 4px;
+  padding: 1.5mm 2mm;
+  font-family: var(--study-font-mono);
+  font-size: 5.8pt;
+  color: #334155;
+  line-height: 1.3;
+  margin-bottom: 2mm;
+  text-align: center;
+  white-space: pre-wrap;
+}
+
+/* Mnemonic / Takeaway Box */
+.study-mnemonic-box {
+  background: rgba(var(--card-rgb, 6, 182, 212), 0.08);
+  border-left: 2px solid var(--card-accent, #06b6d4);
+  border-radius: 0 4px 4px 0;
+  padding: 1.5mm 2.5mm;
+  margin-top: auto;
+}
+
+.study-mnemonic-lbl {
+  font-size: 5.2pt;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--card-accent, #06b6d4);
+  margin-bottom: 0.5mm;
+}
+
+.study-mnemonic-text {
+  font-family: var(--study-font);
+  font-size: calc(var(--card-effective-fs) * 0.65);
+  font-weight: 600;
+  line-height: 1.3;
+  color: #1e293b;
+}
+
+/* --------------------------------------------------------------------------
+   Rich Theme Color Palettes (12 Vibrant Colors)
+   -------------------------------------------------------------------------- */
+.theme-cyan { --card-accent: #06b6d4; --card-rgb: 6, 182, 212; }
+.theme-orange { --card-accent: #f97316; --card-rgb: 249, 115, 22; }
+.theme-purple { --card-accent: #a855f7; --card-rgb: 168, 85, 247; }
+.theme-emerald { --card-accent: #10b981; --card-rgb: 16, 185, 129; }
+.theme-gold { --card-accent: #eab308; --card-rgb: 234, 179, 8; }
+.theme-rose { --card-accent: #f43f5e; --card-rgb: 244, 63, 94; }
+.theme-blue { --card-accent: #3b82f6; --card-rgb: 59, 130, 246; }
+.theme-teal { --card-accent: #14b8a6; --card-rgb: 20, 184, 166; }
+.theme-coral { --card-accent: #fb7185; --card-rgb: 251, 113, 133; }
+.theme-violet { --card-accent: #8b5cf6; --card-rgb: 139, 92, 246; }
+.theme-indigo { --card-accent: #6366f1; --card-rgb: 99, 102, 241; }
+.theme-amber { --card-accent: #f59e0b; --card-rgb: 245, 158, 11; }
+
+/* KaTeX Formula Adjustments */
+.katex {
+  font-size: 0.95em !important;
+  color: #0f172a !important;
+}
+
+/* Print Overrides */
+@media print {
+  .study-card-slot, .study-rotate-inner {
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

@@ -1,0 +1,232 @@
+/* ==========================================================================
+   Quotes & Shayari Card Styling (5cm x 9.5cm • 27 Cards per Sheet)
+   Specially crafted for poetry, shayari couplets, quotes, and typography.
+   With colored borders, rich vibrant palettes, and yaadcard branding.
+   ========================================================================== */
+
+:root {
+  --quote-font-serif: 'Lora', Georgia, serif;
+  --quote-font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --quote-font-size: 13pt;
+  --quote-line-height: 1.5;
+  --quote-text-color: #0f172a;
+  --quote-accent-color: #f43f5e;
+  --quote-author-color: #475569;
+  --quote-bg-color: #ffffff;
+}
+
+/* Card Slot inside .print-card-wrapper (50mm x 95mm) */
+.quote-card-slot {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: var(--quote-bg-color) !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* --------------------------------------------------------------------------
+   Vertical (Portrait Content with Colored Border)
+   -------------------------------------------------------------------------- */
+.quote-card-slot.vertical {
+  margin: 1.2mm auto !important;
+  width: calc(100% - 2.4mm) !important;
+  height: calc(100% - 2.4mm) !important;
+  border: 1.4px solid var(--quote-accent-color) !important;
+  border-radius: 4px !important;
+  padding: 3.5mm 3.8mm 3mm !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+}
+
+.quote-card-slot.vertical .quote-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5mm;
+}
+
+.quote-card-slot.vertical .quote-mark-top {
+  font-family: var(--quote-font-serif);
+  font-size: 18pt;
+  line-height: 1;
+  color: var(--quote-accent-color);
+  opacity: 0.5;
+  font-weight: 700;
+  user-select: none;
+}
+
+.quote-card-slot.vertical .quote-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5mm 0;
+}
+
+.quote-card-slot.vertical .quote-text {
+  font-family: var(--quote-font-serif);
+  font-size: var(--card-fs, var(--quote-font-size));
+  line-height: var(--quote-line-height);
+  color: var(--quote-text-color);
+  font-weight: 500;
+  font-style: italic;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.quote-card-slot.vertical .quote-meaning {
+  margin-top: 2.5mm;
+  font-family: var(--quote-font-sans);
+  font-size: 7pt;
+  line-height: 1.35;
+  color: #64748b;
+  font-style: normal;
+  border-top: 0.5px solid #f1f5f9;
+  padding-top: 1.5mm;
+}
+
+.quote-card-slot.vertical .quote-footer-row {
+  margin-top: 1.5mm;
+  text-align: center;
+  border-top: 0.5px solid #e2e8f0;
+  padding-top: 1.5mm;
+}
+
+.quote-card-slot.vertical .quote-author {
+  font-family: var(--quote-font-sans);
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: var(--quote-author-color);
+  letter-spacing: 0.04em;
+}
+
+/* --------------------------------------------------------------------------
+   Horizontal (Rotated 90° Content with Colored Border)
+   -------------------------------------------------------------------------- */
+.quote-card-slot.horizontal {
+  padding: 0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+
+.quote-card-slot.horizontal .quote-rotate-inner {
+  width: calc(95mm - 2.4mm) !important;
+  height: calc(50mm - 2.4mm) !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) !important;
+  transform-origin: center center !important;
+  border: 1.4px solid var(--quote-accent-color) !important;
+  border-radius: 4px !important;
+  padding: 3mm 4.5mm !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  background-color: #ffffff !important;
+}
+
+.quote-card-slot.horizontal .quote-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quote-card-slot.horizontal .quote-mark-top {
+  font-family: var(--quote-font-serif);
+  font-size: 16pt;
+  line-height: 1;
+  color: var(--quote-accent-color);
+  opacity: 0.5;
+  font-weight: 700;
+}
+
+.quote-card-slot.horizontal .quote-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: 1mm 0;
+}
+
+.quote-card-slot.horizontal .quote-text {
+  font-family: var(--quote-font-serif);
+  font-size: var(--card-fs, var(--quote-font-size));
+  line-height: var(--quote-line-height);
+  color: var(--quote-text-color);
+  font-weight: 500;
+  font-style: italic;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.quote-card-slot.horizontal .quote-meaning {
+  margin-top: 1mm;
+  font-family: var(--quote-font-sans);
+  font-size: 7pt;
+  line-height: 1.35;
+  color: #64748b;
+  font-style: normal;
+}
+
+.quote-card-slot.horizontal .quote-footer-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-top: 0.5px solid #e2e8f0;
+  padding-top: 1.2mm;
+}
+
+.quote-card-slot.horizontal .quote-author {
+  font-family: var(--quote-font-sans);
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: var(--quote-author-color);
+  letter-spacing: 0.04em;
+}
+
+/* --------------------------------------------------------------------------
+   YAADCARD Subtle Neutral Brand Tag
+   -------------------------------------------------------------------------- */
+.quote-brand {
+  font-family: var(--quote-font-sans);
+  font-size: 4.8pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  opacity: 0.65;
+  user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   Rich Color Themes for Borders & Accents
+   -------------------------------------------------------------------------- */
+.theme-rose { --quote-accent-color: #f43f5e; }
+.theme-cyan { --quote-accent-color: #06b6d4; }
+.theme-emerald { --quote-accent-color: #10b981; }
+.theme-purple { --quote-accent-color: #a855f7; }
+.theme-orange { --quote-accent-color: #f97316; }
+.theme-gold { --quote-accent-color: #eab308; }
+.theme-blue { --quote-accent-color: #3b82f6; }
+.theme-teal { --quote-accent-color: #14b8a6; }
+.theme-coral { --quote-accent-color: #fb7185; }
+.theme-violet { --quote-accent-color: #8b5cf6; }
+.theme-indigo { --quote-accent-color: #6366f1; }
+.theme-amber { --quote-accent-color: #f59e0b; }
+
+/* Print Overrides */
+@media print {
+  .quote-card-slot, .quote-rotate-inner {
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

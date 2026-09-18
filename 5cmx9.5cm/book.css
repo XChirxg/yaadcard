@@ -1,0 +1,197 @@
+/* ==========================================================================
+   Book Summary & Self-Help Deck Styling (5cm x 9.5cm • 27 Cards per Sheet)
+   Specially crafted for 48 Laws of Power, Atomic Habits, and Book Summaries.
+   Features colored borders, core points, explanations, and key takeaways.
+   ========================================================================== */
+
+:root {
+  --book-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --book-font-mono: 'Fira Code', monospace;
+  --book-accent: #06b6d4;
+  --book-rgb: 6, 182, 212;
+  --book-base-fs: 9.5pt;
+}
+
+/* Card Slot inside .print-card-wrapper (50mm x 95mm) */
+.book-card-slot {
+  --card-effective-fs: var(--card-custom-fs, var(--book-base-fs, 9.5pt));
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+/* --------------------------------------------------------------------------
+   Vertical Layout (Portrait Content with Colored Border)
+   -------------------------------------------------------------------------- */
+.book-card-slot.vertical {
+  margin: 1.2mm auto !important;
+  width: calc(100% - 2.4mm) !important;
+  height: calc(100% - 2.4mm) !important;
+  border: 1.4px solid var(--book-accent) !important;
+  border-radius: 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 3mm 3.5mm 2.8mm !important;
+  box-sizing: border-box !important;
+}
+
+.book-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2mm;
+}
+
+/* Subtle Neutral YAADCARD Brand Tag */
+.book-brand {
+  font-family: var(--book-font);
+  font-size: 4.8pt;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  opacity: 0.65;
+  user-select: none;
+}
+
+.book-law-badge {
+  font-family: var(--book-font-mono);
+  font-size: 5.5pt;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--book-accent);
+  background: rgba(var(--book-rgb), 0.1);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+.book-title {
+  font-family: var(--book-font);
+  font-size: calc(var(--card-effective-fs) * 0.94);
+  font-weight: 800;
+  line-height: 1.25;
+  color: #0f172a;
+  margin-bottom: 2mm;
+  letter-spacing: -0.01em;
+}
+
+.book-explanation {
+  font-family: var(--book-font);
+  font-size: calc(var(--card-effective-fs) * 0.76);
+  line-height: 1.45;
+  color: #334155;
+  margin-bottom: 2mm;
+}
+
+.book-takeaway-box {
+  background: rgba(var(--book-rgb), 0.08);
+  border-left: 2.2px solid var(--book-accent);
+  border-radius: 0 4px 4px 0;
+  padding: 2mm 2.5mm;
+  margin-top: auto;
+}
+
+.book-takeaway-lbl {
+  font-size: 5pt;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--book-accent);
+  margin-bottom: 0.6mm;
+}
+
+.book-takeaway-text {
+  font-family: var(--book-font);
+  font-size: calc(var(--card-effective-fs) * 0.72);
+  font-weight: 600;
+  line-height: 1.35;
+  color: #0f172a;
+}
+
+/* --------------------------------------------------------------------------
+   Horizontal Layout (Rotated 90° Content with Colored Border)
+   -------------------------------------------------------------------------- */
+.book-card-slot.horizontal {
+  padding: 0 !important;
+  display: block !important;
+}
+
+.book-card-slot.horizontal .book-rotate-inner {
+  width: calc(95mm - 2.4mm) !important;
+  height: calc(50mm - 2.4mm) !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) rotate(90deg) !important;
+  transform-origin: center center !important;
+  border: 1.4px solid var(--book-accent) !important;
+  border-radius: 4px !important;
+  padding: 2.5mm 4mm !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  background-color: #ffffff !important;
+}
+
+.book-horizontal-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3.5mm;
+  flex: 1;
+  align-items: start;
+  overflow: hidden;
+}
+
+.book-card-slot.horizontal .book-title {
+  font-size: calc(var(--card-effective-fs) * 0.90);
+  margin-bottom: 1mm;
+}
+
+.book-card-slot.horizontal .book-explanation {
+  font-size: calc(var(--card-effective-fs) * 0.72);
+  line-height: 1.35;
+  margin-bottom: 0;
+}
+
+.book-card-slot.horizontal .book-takeaway-box {
+  padding: 1.5mm 2mm;
+}
+
+.book-card-slot.horizontal .book-takeaway-lbl {
+  font-size: 4.8pt;
+}
+
+.book-card-slot.horizontal .book-takeaway-text {
+  font-size: calc(var(--card-effective-fs) * 0.65);
+}
+
+/* --------------------------------------------------------------------------
+   12 Rich Theme Color Palettes
+   -------------------------------------------------------------------------- */
+.theme-cyan { --book-accent: #06b6d4; --book-rgb: 6, 182, 212; }
+.theme-orange { --book-accent: #f97316; --book-rgb: 249, 115, 22; }
+.theme-purple { --book-accent: #a855f7; --book-rgb: 168, 85, 247; }
+.theme-emerald { --book-accent: #10b981; --book-rgb: 16, 185, 129; }
+.theme-gold { --book-accent: #eab308; --book-rgb: 234, 179, 8; }
+.theme-rose { --book-accent: #f43f5e; --book-rgb: 244, 63, 94; }
+.theme-blue { --book-accent: #3b82f6; --book-rgb: 59, 130, 246; }
+.theme-teal { --book-accent: #14b8a6; --book-rgb: 20, 184, 166; }
+.theme-coral { --book-accent: #fb7185; --book-rgb: 251, 113, 133; }
+.theme-violet { --book-accent: #8b5cf6; --book-rgb: 139, 92, 246; }
+.theme-indigo { --book-accent: #6366f1; --book-rgb: 99, 102, 241; }
+.theme-amber { --book-accent: #f59e0b; --book-rgb: 245, 158, 11; }
+
+/* Print Overrides */
+@media print {
+  .book-card-slot, .book-rotate-inner {
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

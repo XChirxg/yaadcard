@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Deck Studio (5cm × 9.5cm • 27 Cards per Sheet)</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="image.css">
+</head>
+<body data-paper="12x18">
+
+  <div class="editor-workspace">
+
+    <!-- TOP NAVIGATION TABS -->
+    <nav class="editor-nav">
+      <a href="index.html" class="nav-tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        <span>Plain Cards</span>
+      </a>
+      <a href="quote.html" class="nav-tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.75-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></svg>
+        <span>Quotes &amp; Shayari</span>
+      </a>
+      <a href="study.html" class="nav-tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+        <span>Study Flashcards</span>
+      </a>
+      <a href="book.html" class="nav-tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span>Book Summaries</span>
+      </a>
+      <a href="image.html" class="nav-tab active">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+        <span>Image Deck</span>
+      </a>
+    </nav>
+
+    <!-- CONTROL PANEL -->
+    <div class="premium-card">
+      <div class="crop-mark top-left-crop"></div>
+      <div class="crop-mark top-right-crop"></div>
+      <div class="crop-mark bottom-left-crop"></div>
+      <div class="crop-mark bottom-right-crop"></div>
+
+      <div class="tuck-color-stripe">
+        <span class="stripe-bar cyan-bar"></span>
+        <span class="stripe-bar orange-bar"></span>
+        <span class="stripe-bar purple-bar"></span>
+        <span class="stripe-bar emerald-bar"></span>
+        <span class="stripe-bar gold-bar"></span>
+      </div>
+      
+      <!-- Header -->
+      <div class="card-header-ui">
+        <div class="brand">
+          <h2>Image Deck Studio</h2>
+          <span class="brand-badge">Direct Image Printing</span>
+          <span class="brand-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">27 Cards / Sheet</span>
+        </div>
+        
+        <!-- Controls: Orientation, Fit & Paper -->
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <div class="toggle-pill" id="orientation-toggle">
+            <button class="pill-btn active" data-orientation="vertical" title="Vertical Content (Portrait 50mm x 95mm)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="20" x="5" y="2" rx="2"/></svg>
+              <span>Vertical (Portrait)</span>
+            </button>
+            <button class="pill-btn" data-orientation="horizontal" title="Horizontal Content (Rotated 90° inside card for landscape artwork)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="14" x="2" y="5" rx="2"/></svg>
+              <span>Horizontal (Rotated 90°)</span>
+            </button>
+          </div>
+
+          <div class="toggle-pill" id="fit-toggle">
+            <button class="pill-btn active" data-fit="cover" title="Cover: Fills the entire 50mm x 95mm card (crops overflow)">Cover</button>
+            <button class="pill-btn" data-fit="contain" title="Contain: Fits complete image inside without cropping">Contain</button>
+          </div>
+
+          <div class="toggle-pill" id="paper-toggle">
+            <button class="pill-btn active" data-paper="12x18" title="12x18 inch Sheet">12×18" Sheet</button>
+            <button class="pill-btn" data-paper="iso-a3" title="Standard ISO A3 (297x420mm)">ISO A3</button>
+          </div>
+
+          <div class="toggle-pill" id="fs-pill" style="display: flex; align-items: center; padding: 0 10px; font-size: 0.76rem; color: #94a3b8;">
+            <span style="margin-right: 6px;">Watermark Size:</span>
+            <select id="font-size-select" class="prompt-topic-input" style="width: auto; padding: 2px 6px; font-size: 0.76rem; height: 26px; cursor: pointer;">
+              <option value="3.8pt">3.8pt - Tiny</option>
+              <option value="4.5pt" selected>4.5pt - Standard</option>
+              <option value="5.5pt">5.5pt - Medium</option>
+              <option value="6.5pt">6.5pt - Prominent</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls & Customization -->
+      <div class="card-body-ui">
+        
+        <!-- Upload & Action Bar -->
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 16px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+          <div>
+            <div style="font-weight: 700; color: #f8fafc; font-size: 0.95rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Drag &amp; Drop Images or Batch Upload</span>
+            </div>
+            <div style="color: #94a3b8; font-size: 0.78rem;">
+              Drop up to 27 image files directly onto this page, or click any individual card slot below to replace it.
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-gradient" id="batch-upload-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span>Batch Upload (27, 54, 81+)</span>
+            </button>
+
+            <button class="btn btn-secondary" id="import-urls-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span>Import URLs / JSON</span>
+            </button>
+
+            <button class="btn btn-secondary" id="load-sample-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <span>Load 27 Demo Cards</span>
+            </button>
+
+            <button class="btn btn-secondary" id="load-sample-54-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+              <span>Load 54 Demo Cards (2 Sheets)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hidden File Inputs -->
+        <input type="file" id="batch-file-input" multiple accept="image/*" style="display: none;">
+        <input type="file" id="single-file-input" accept="image/*" style="display: none;">
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+          <div class="stat-item">
+            <div class="stat-lbl">Images Loaded</div>
+            <div class="stat-val" id="stat-images">0 / 27 images</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-lbl">Sheets Required</div>
+            <div class="stat-val" id="stat-sheets">0 sheets</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-lbl">Grid Format</div>
+            <div class="stat-val" id="stat-grid" style="font-size: 0.95rem;">9 × 3 (27 Cards per Sheet)</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-lbl">Card Dimension</div>
+            <div class="stat-val" style="color: #38bdf8; font-size: 0.95rem;">50mm × 95mm (5cm × 9.5cm)</div>
+          </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons" style="justify-content: flex-end; align-items: center; gap: 12px; margin-top: 4px; flex-wrap: wrap;">
+          <button class="btn btn-secondary" id="add-sheet-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            <span>+ Add Another Page (+27 Slots)</span>
+          </button>
+
+          <button class="btn btn-secondary" id="clear-all-btn">
+            <span>Clear All Slots</span>
+          </button>
+          
+          <button class="btn btn-primary" id="print-btn" style="padding: 12px 28px; font-size: 0.92rem;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            <span>Print All Sheets (Save PDF)</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PREVIEW WORKSPACE -->
+    <div class="preview-section">
+      <div class="preview-header">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>Live Sheet Preview (Click any slot to add/change image)</span>
+        </h3>
+
+        <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <div class="toggle-pill" id="preview-mode-toggle">
+            <button class="pill-btn active" data-mode="sheet">Full Sheet Grid (27 Up)</button>
+            <button class="pill-btn" data-mode="inspector">Card Gallery</button>
+          </div>
+
+          <div class="zoom-controls" id="zoom-controls">
+            <span>Zoom</span>
+            <input type="range" class="zoom-slider" id="zoom-slider" min="30" max="100" value="50">
+            <span id="zoom-val">50%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen-preview-container">
+        <div id="screen-preview-content" class="sheet-preview-wrapper" style="transform: scale(0.50);"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL FOR URL / JSON IMPORT -->
+  <div class="modal-overlay" id="url-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Import Image URLs or JSON Array</h3>
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 12px; font-size: 0.82rem; color: #94a3b8;">
+          Paste a list of image URLs (one per line) or a JSON array of URLs / objects (up to 27 items):
+        </p>
+        <textarea id="url-input" class="modal-textarea" style="width: 100%; height: 180px; background: #090d16; border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 12px; color: #e2e8f0; font-family: var(--font-mono); font-size: 0.78rem; box-sizing: border-box;" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg&#10;...&#10;or [&#10;  &quot;https://.../img1.jpg&quot;,&#10;  &quot;https://.../img2.jpg&quot;&#10;]"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-gradient" id="apply-urls-btn">Apply Images to Slots</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FOR CARD EDITING (IMAGE, CAPTION & FONT SIZE) -->
+  <div class="modal-overlay" id="card-edit-modal">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="brand-badge" id="edit-card-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">Card #1</span>
+          <h3 style="margin: 0; font-size: 1.05rem;">Edit Image Card &amp; Caption</h3>
+        </div>
+        <button class="modal-close-btn" id="card-edit-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <form class="card-edit-form" id="card-edit-form" onsubmit="return false;">
+          <div class="card-edit-row">
+            <label class="card-edit-label">
+              <span>Card Label / Watermark Font Size</span>
+              <span id="current-fs-hint">Current: 4.5pt</span>
+            </label>
+            <select id="card-edit-fs" class="card-edit-select">
+              <option value="">Default (Sheet Size)</option>
+              <option value="3.8pt">3.8pt - Tiny</option>
+              <option value="4.5pt">4.5pt - Standard</option>
+              <option value="5.5pt">5.5pt - Medium</option>
+              <option value="6.5pt">6.5pt - Large</option>
+              <option value="8pt">8pt - Bold</option>
+            </select>
+          </div>
+
+          <div class="card-edit-row">
+            <label class="card-edit-label">Brand / Watermark Text</label>
+            <input type="text" id="card-edit-watermark" class="card-edit-input" placeholder="YAADCARD">
+          </div>
+
+          <div class="card-edit-row">
+            <label class="card-edit-label">Image Source URL or Data URL</label>
+            <input type="text" id="card-edit-img-url" class="card-edit-input" placeholder="Paste image URL or data URI...">
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px;">
+            <button class="btn btn-secondary" id="card-edit-upload-btn" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Upload Local Image</span>
+            </button>
+            <button class="btn btn-secondary" id="card-edit-remove-btn" type="button" style="color: #f87171;">
+              <span>Clear This Slot</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="card-edit-cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="card-edit-save-btn">Apply &amp; Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HIDDEN PRINT AREA (RENDERED FOR PRINT / PDF) -->
+  <div id="print-area"></div>
+
+  <!-- Scripts -->
+  <script src="sample_data.js"></script>
+  <script src="image.js"></script>
+</body>
+</html>
